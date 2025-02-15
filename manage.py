@@ -2,10 +2,12 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import django_stubs_ext
 
 
 def main() -> None:
     """Run administrative tasks."""
+    django_stubs_ext.monkeypatch()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wallpaperzzz.settings')
     try:
         from django.core.management import execute_from_command_line
