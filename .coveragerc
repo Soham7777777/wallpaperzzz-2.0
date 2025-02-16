@@ -1,0 +1,24 @@
+[report]
+exclude_also =
+    def __repr__
+    def main
+    if __name__ == .__main__.:
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
+
+
+[run]
+source =
+    tests
+    adminapp
+    wallpaperzzz
+
+omit =
+    wallpaperzzz/wsgi.py
+    */migrations/*

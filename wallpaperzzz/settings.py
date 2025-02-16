@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+kb = 1024
+mb = 1024 * kb
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -126,3 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = '/home/soham/Playgrounds/django_playground/wallpaperzzz_2_0/uploads/'
 
 MEDIA_URL = '/media/'
+
+MAX_FILE_SIZE = 1 * mb
