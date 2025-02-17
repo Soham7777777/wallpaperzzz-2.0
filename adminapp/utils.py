@@ -2,7 +2,7 @@ from dataclasses import KW_ONLY, dataclass
 from pathlib import PurePath
 import string
 import time
-from typing import Any, ClassVar
+from typing import ClassVar, Literal
 from django.db import models
 from django.utils.deconstruct import deconstructible
 
@@ -15,7 +15,7 @@ class FileUploadPathGenerator:
     base_path: PurePath
     name_prefix: str
 
-    _name_prefix_range: ClassVar[tuple[int, int]] = 2, 16
+    _name_prefix_range: ClassVar[tuple[Literal[2], Literal[16]]] = 2, 16
 
 
     def __post_init__(self) -> None:
