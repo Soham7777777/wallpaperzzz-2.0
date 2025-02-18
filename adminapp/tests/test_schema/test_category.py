@@ -72,11 +72,3 @@ class TestThumbnailField(unittest.TestCase):
     def test_has_upload_to_callable(self) -> None:
         self.assertEqual(self.thumbnail_field.upload_to, FileUploadPathGenerator(base_path=PurePath('category_thumbnails'), name_prefix='thumbnail'))
 
-
-
-# filename = 'somefile.png'
-# with patch('time.time') as mock_time_stamp:
-#     mock_time_stamp.return_value = 1739624091.3249042
-#     upload_path = PurePath(get_upload_path(Mock(), 'somefile.png'))
-#     self.assertEqual(str(upload_path.parent), 'category_thumbnail')
-#     self.assertEqual(upload_path.name, f'thumbnail{''.join(str(time.time()).split('.'))}{PurePath(filename).suffix}')

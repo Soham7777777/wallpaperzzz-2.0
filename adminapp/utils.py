@@ -22,7 +22,7 @@ class FileUploadPathGenerator:
         if self.base_path.is_absolute():
             raise ValueError(f"The base_path ({str(self.base_path)}) must be relative.")
         
-        if string.whitespace in self.name_prefix:
+        if set(string.whitespace) & set(self.name_prefix):
             raise ValueError(f"The name_prefix ({self.name_prefix}) must not contain any whitespace characters.")
 
         min_size, max_size = FileUploadPathGenerator._name_prefix_range

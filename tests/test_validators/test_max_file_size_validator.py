@@ -32,24 +32,24 @@ class TestMaxFileSizeAttributeRange(unittest.TestCase):
 
 class TestValidation(unittest.TestCase):
 
-    validator_func = MaxFileSizeValidator(max_file_size=random.randint(*MaxFileSizeValidator._max_file_size_range))
+    function = MaxFileSizeValidator(max_file_size=random.randint(*MaxFileSizeValidator._max_file_size_range))
     mock_field_file = Mock(spec_set=FieldFile)
 
 
     def test_validation_for_max_file_size(self) -> None:
-        self.mock_field_file.size = self.validator_func.max_file_size
-        self.validator_func(self.mock_field_file)
+        self.mock_field_file.size = self.function.max_file_size
+        self.function(self.mock_field_file)
 
 
     def test_validation_for_min_size(self) -> None:
-        self.mock_field_file.size = self.validator_func._max_file_size_range[0]
-        self.validator_func(self.mock_field_file)
+        self.mock_field_file.size = self.function._max_file_size_range[0]
+        self.function(self.mock_field_file)
 
 
     def test_validation_for_invalid_max_file_size(self) -> None:
-        self.mock_field_file.size = self.validator_func.max_file_size + random.randint(1, 64)
+        self.mock_field_file.size = self.function.max_file_size + random.randint(1, 64)
         with self.assertRaises(ValidationError) as err:
-            self.validator_func(self.mock_field_file)
+            self.function(self.mock_field_file)
         self.assertEqual(err.exception.args[0], "Ensure that the file size is less than or equal to %(max_size)s bytes.")
         self.assertEqual(err.exception.code, 'file_too_large')
-        self.assertEqual(err.exception.params, {'max_size': str(self.validator_func.max_file_size)})
+        self.assertEqual(err.exception.params, {'max_size': str(self.function.max_file_size)})
