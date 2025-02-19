@@ -9,9 +9,11 @@ from adminapp.fields import WallpaperDimensionField
 
 
 NAME_REGEX = r"^(?!.*\s{2,})[A-Za-z]+(?: [A-Za-z]+)*$", "Ensure that the name contains only English letters or spaces, with no leading or trailing spaces and no consecutive spaces."
+KEY_REGEX = r"^[A-Z]+(?:_[A-Z]+)*$", "Ensure that the key contains only uppercase English letters or underscores, with no leading or trailing underscores and no consecutive underscores."
 
 
 class Category(models.Model):
+
     name = models.CharField(
         blank=False,
         null=False,
@@ -48,3 +50,15 @@ class WallpaperDimension(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['width', 'height'], name="unique_width_height")
         ]
+
+
+class SettingsStore(models.Model):
+    
+    key = models.CharField(
+        primary_key=True,
+        max_length=64,
+        validators=[
+            validators.MinLengthValidator(2),
+            validators.RegexValidator(*KEY_REGEX),
+        ]
+    )
