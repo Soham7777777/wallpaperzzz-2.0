@@ -22,3 +22,4 @@ source =
 omit =
     wallpaperzzz/wsgi.py
     */migrations/*
+    __init__.py

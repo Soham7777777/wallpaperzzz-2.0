@@ -4,6 +4,8 @@ from django.core import validators
 from django.conf import settings
 from adminapp.validators import MaxFileSizeValidator
 from adminapp.utils import FileUploadPathGenerator
+from django_stubs_ext.db.models import TypedModelMeta
+from adminapp.fields import WallpaperDimensionField
 
 
 NAME_REGEX = r"^(?!.*\s{2,})[A-Za-z]+(?: [A-Za-z]+)*$", "Ensure that the name contains only English letters or spaces, with no leading or trailing spaces and no consecutive spaces."
@@ -32,3 +34,17 @@ class Category(models.Model):
     )
 
     objects: models.Manager["Category"] = models.Manager()
+
+
+class WallpaperDimension(models.Model):
+    
+    width = WallpaperDimensionField()
+    height = WallpaperDimensionField()
+
+    objects: models.Manager["WallpaperDimension"] = models.Manager()
+
+
+    class Meta(TypedModelMeta):
+        constraints = [
+            models.UniqueConstraint(fields=['width', 'height'], name="unique_width_height")
+        ]
