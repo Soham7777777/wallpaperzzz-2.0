@@ -71,4 +71,3 @@ class TestThumbnailField(unittest.TestCase):
 
     def test_has_upload_to_callable(self) -> None:
         self.assertEqual(self.thumbnail_field.upload_to, FileUploadPathGenerator(base_path=PurePath('category_thumbnails'), name_prefix='thumbnail'))
-
