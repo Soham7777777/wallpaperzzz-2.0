@@ -183,7 +183,5 @@ temp.*
 temp/
 temp_*
 
-notes.txt
-
 uploads/
 migrations/

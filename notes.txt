@@ -1,0 +1,1 @@
+- The file from the media root are served statically which means that its accessible without user login

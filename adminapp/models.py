@@ -25,9 +25,9 @@ class Category(models.Model):
         blank=False,
         null=False,
         unique=True,
-        upload_to=FileUploadPathGenerator(base_path=PurePath('category_thumbnails'), name_prefix='thumbnail'),
+        upload_to=FileUploadPathGenerator(PurePath('category_thumbnails'), 'thumbnail'),
         validators=[
-            MaxFileSizeValidator(max_file_size=settings.MAX_FILE_SIZE),
+            MaxFileSizeValidator(settings.MAX_FILE_SIZE),
             validators.FileExtensionValidator(('png',)),
         ],
     )
