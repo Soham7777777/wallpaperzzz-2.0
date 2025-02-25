@@ -1,4 +1,4 @@
-from dataclasses import KW_ONLY, dataclass
+from dataclasses import dataclass
 from pathlib import PurePath
 import string
 import time
@@ -11,7 +11,6 @@ from django.utils.deconstruct import deconstructible
 @dataclass
 class FileUploadPathGenerator:
 
-    _: KW_ONLY
     base_path: PurePath
     name_prefix: str
 

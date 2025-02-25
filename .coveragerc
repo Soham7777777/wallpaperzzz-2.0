@@ -15,8 +15,8 @@ exclude_also =
 
 [run]
 source =
-    tests
     adminapp
+    common
     wallpaperzzz
 
 omit =

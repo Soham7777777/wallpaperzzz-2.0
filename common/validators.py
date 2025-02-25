@@ -1,4 +1,4 @@
-from dataclasses import KW_ONLY, dataclass
+from dataclasses import dataclass
 from typing import ClassVar, Literal
 from django.utils.deconstruct import deconstructible
 from django.db.models.fields.files import FieldFile
@@ -9,7 +9,6 @@ from django.core.exceptions import ValidationError
 @dataclass
 class MaxFileSizeValidator:
 
-    _: KW_ONLY
     max_file_size: int
 
     _max_file_size_range: ClassVar[tuple[Literal[1], Literal[100_00000]]] = 1, 100_00000

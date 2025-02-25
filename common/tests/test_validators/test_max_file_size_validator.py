@@ -1,38 +1,36 @@
 import random
-import unittest
+from django.test import SimpleTestCase
 from unittest.mock import Mock
-from adminapp.validators import MaxFileSizeValidator
+from common.validators import MaxFileSizeValidator
 from django.db.models.fields.files import FieldFile
 from django.core.exceptions import ValidationError
 
 
-class TestMaxFileSizeAttributeRange(unittest.TestCase):
+class TestMaxFileSizeAttributeRange(SimpleTestCase):
 
     min_size, max_size = MaxFileSizeValidator._max_file_size_range
     valid_max_file_size = random.randint(min_size, max_size)
         
 
     def test_valid_range(self) -> None:
-        MaxFileSizeValidator(max_file_size=self.valid_max_file_size)
+        MaxFileSizeValidator(self.valid_max_file_size)
 
 
     def test_invalid_min_size(self) -> None:
         invalid_min_size = self.min_size - random.randint(1, 64)
-        with self.assertRaises(ValueError) as err:
-            MaxFileSizeValidator(max_file_size=invalid_min_size)
-        self.assertEqual(err.exception.args[0], f"The max_file_size ({invalid_min_size}) must be an integer value within {self.min_size} to {self.max_size}.")
+        with self.assertRaisesMessage(ValueError, f"The max_file_size ({invalid_min_size}) must be an integer value within {self.min_size} to {self.max_size}."):
+            MaxFileSizeValidator(invalid_min_size)
 
 
     def test_invalid_max_size(self) -> None:
         invalid_max_size = self.max_size + random.randint(1, 64)
-        with self.assertRaises(ValueError) as err:
-            MaxFileSizeValidator(max_file_size=invalid_max_size)
-        self.assertEqual(err.exception.args[0], f"The max_file_size ({invalid_max_size}) must be an integer value within {self.min_size} to {self.max_size}.")
+        with self.assertRaisesMessage(ValueError, f"The max_file_size ({invalid_max_size}) must be an integer value within {self.min_size} to {self.max_size}."):
+            MaxFileSizeValidator(invalid_max_size)
     
 
-class TestValidation(unittest.TestCase):
+class TestValidation(SimpleTestCase):
 
-    function = MaxFileSizeValidator(max_file_size=random.randint(*MaxFileSizeValidator._max_file_size_range))
+    function = MaxFileSizeValidator(random.randint(*MaxFileSizeValidator._max_file_size_range))
     mock_field_file = Mock(spec_set=FieldFile)
 
 

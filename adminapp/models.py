@@ -2,14 +2,11 @@ from pathlib import PurePath
 from django.db import models
 from django.core import validators
 from django.conf import settings
-from adminapp.validators import MaxFileSizeValidator
-from adminapp.utils import FileUploadPathGenerator
+from common.validators import MaxFileSizeValidator
+from common.utils import FileUploadPathGenerator
+from common.regexes import name_regex_validator, key_regex_validator
 from django_stubs_ext.db.models import TypedModelMeta
 from adminapp.fields import WallpaperDimensionField
-
-
-NAME_REGEX = r"^(?!.*\s{2,})[A-Za-z]+(?: [A-Za-z]+)*$", "Ensure that the name contains only English letters or spaces, with no leading or trailing spaces and no consecutive spaces."
-KEY_REGEX = r"^[A-Z]+(?:_[A-Z]+)*$", "Ensure that the key contains only uppercase English letters or underscores, with no leading or trailing underscores and no consecutive underscores."
 
 
 class Category(models.Model):
@@ -21,7 +18,7 @@ class Category(models.Model):
         max_length=32,
         validators=[
             validators.MinLengthValidator(2),
-            validators.RegexValidator(*NAME_REGEX),
+            name_regex_validator,
         ],
     )
     thumbnail = models.ImageField(
@@ -59,6 +56,6 @@ class SettingsStore(models.Model):
         max_length=64,
         validators=[
             validators.MinLengthValidator(2),
-            validators.RegexValidator(*KEY_REGEX),
+            key_regex_validator,
         ]
     )

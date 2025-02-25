@@ -1,10 +1,8 @@
-from django.db import models
 from django.core import validators
-from django.utils.deconstruct import deconstructible
+from django.db.models import PositiveIntegerField
 
 
-@deconstructible
-class WallpaperDimensionField(models.PositiveIntegerField[int, int]):
+class WallpaperDimensionField(PositiveIntegerField):
     
     def __init__(self) -> None:
         super().__init__()
