@@ -8,8 +8,8 @@ class AdminappConfig(AppConfig):
 
 
     def ready(self) -> None:
-        from . import signals
+        from common import signals
 
-        post_delete.connect(signals.delete_category_thumbnail, sender='adminapp.Category', dispatch_uid='delete_category_thumbnail')
+        post_delete.connect(signals.delete_file_post_delete_function, sender='adminapp.Category', dispatch_uid='CATEGORY_DELETE_FILES_POST_DELETE')
 
-        pre_save.connect(signals.delete_old_category_thumbnail, sender='adminapp.Category', dispatch_uid='delete_old_category_thumbnail')
+        pre_save.connect(signals.delete_old_file_pre_save_function, sender='adminapp.Category', dispatch_uid='CATEGORY_DELETE_OLD_FILES_PRE_SAVE')

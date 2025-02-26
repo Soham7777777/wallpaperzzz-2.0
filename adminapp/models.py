@@ -5,11 +5,12 @@ from django.conf import settings
 from common.validators import MaxFileSizeValidator
 from common.utils import FileUploadPathGenerator
 from common.regexes import name_regex_validator, key_regex_validator
-from django_stubs_ext.db.models import TypedModelMeta
+from common.signals import SignalEffect
+from common.models import AbstractBaseModel
 from adminapp.fields import WallpaperDimensionField
 
 
-class Category(models.Model):
+class Category(AbstractBaseModel):
 
     name = models.CharField(
         blank=False,
@@ -22,6 +23,7 @@ class Category(models.Model):
         ],
     )
     thumbnail = models.ImageField(
+        verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
         blank=False,
         null=False,
         unique=True,
@@ -32,24 +34,20 @@ class Category(models.Model):
         ],
     )
 
-    objects: models.Manager["Category"] = models.Manager()
 
-
-class WallpaperDimension(models.Model):
+class WallpaperDimension(AbstractBaseModel):
     
     width = WallpaperDimensionField()
     height = WallpaperDimensionField()
 
-    objects: models.Manager["WallpaperDimension"] = models.Manager()
 
-
-    class Meta(TypedModelMeta):
+    class Meta(AbstractBaseModel.Meta):
         constraints = [
             models.UniqueConstraint(fields=['width', 'height'], name="unique_width_height")
         ]
 
 
-class SettingsStore(models.Model):
+class SettingsStore(AbstractBaseModel):
     
     key = models.CharField(
         primary_key=True,
