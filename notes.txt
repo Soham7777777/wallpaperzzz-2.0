@@ -1,1 +1,3 @@
 - The file from the media root are served statically which means that its accessible without user login
+
+- Writing a ImageFileTypeValidator that takes "type" image instead of the file extension, this is because one image type can have multiple extensions, for example: PNG => '.png', '.apng'. We can create enum for most common image file types used on web which is based on "PIL.Image.EXTENSION" and take that as input. for example we can support PNG, JPEG, BMP, GIF, ICO, PDF, TIFF, WEBP
