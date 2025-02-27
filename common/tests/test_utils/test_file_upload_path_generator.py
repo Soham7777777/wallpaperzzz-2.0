@@ -15,7 +15,7 @@ class TestAttributeValidation(SimpleTestCase):
     invalid_base_path = PurePath('/some_absolute_path')
     invalid_name_prefix_too_large = 'A'*(FileUploadPathGenerator._name_prefix_range[1] + random.randint(1, 64))
     invalid_name_prefix_too_small = 'A'*(FileUploadPathGenerator._name_prefix_range[0] - 1)
-    invalid_name_prefix_contains_white_space = ('A'*(FileUploadPathGenerator._name_prefix_range[0])) + random.choice(string.whitespace) 
+    invalid_name_prefix_contains_disallowed_characters = ('A'*(FileUploadPathGenerator._name_prefix_range[0])) + random.choice(string.digits + string.punctuation + string.whitespace) 
 
 
     def test_valid_attributes(self) -> None:
@@ -37,9 +37,9 @@ class TestAttributeValidation(SimpleTestCase):
             FileUploadPathGenerator(self.valid_base_path, self.invalid_name_prefix_too_small)
     
 
-    def test_invalid_name_prefix_contains_white_space(self) -> None:
-        with self.assertRaisesMessage(ValueError, f"The name_prefix ({self.invalid_name_prefix_contains_white_space}) must not contain any whitespace characters."):
-            FileUploadPathGenerator(self.valid_base_path, self.invalid_name_prefix_contains_white_space)
+    def test_invalid_name_prefix_contains_disallowed_characters(self) -> None:
+        with self.assertRaisesMessage(ValueError, f"The name_prefix ({self.invalid_name_prefix_contains_disallowed_characters}) can only contain ascii letters."):
+            FileUploadPathGenerator(self.valid_base_path, self.invalid_name_prefix_contains_disallowed_characters)
 
     
 class TestFunction(SimpleTestCase):

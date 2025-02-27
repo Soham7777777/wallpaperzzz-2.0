@@ -21,8 +21,8 @@ class FileUploadPathGenerator:
         if self.base_path.is_absolute():
             raise ValueError(f"The base_path ({str(self.base_path)}) must be relative.")
         
-        if set(string.whitespace) & set(self.name_prefix):
-            raise ValueError(f"The name_prefix ({self.name_prefix}) must not contain any whitespace characters.")
+        if not set(self.name_prefix).issubset(string.ascii_letters):
+            raise ValueError(f"The name_prefix ({self.name_prefix}) can only contain ascii letters.")
 
         min_size, max_size = FileUploadPathGenerator._name_prefix_range
         if len(self.name_prefix) > max_size or len(self.name_prefix) < min_size:
