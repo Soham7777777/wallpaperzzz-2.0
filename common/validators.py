@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import PurePath
@@ -37,14 +37,17 @@ class MaxFileSizeValidator:
 @dataclass
 class ImageTypeFileExtensionsValidator:
 
-    image_type: ImageType
+    image_types: Sequence[ImageType]
 
 
     def __call__(self, value: ImageFieldFile) -> None:
-        extensions = get_file_extensions_for_image_type(self.image_type)
+        extensions: list[str] = []
+        for image_type in self.image_types:
+            extensions += [*get_file_extensions_for_image_type(image_type)]
+        
         if PurePath(value.path).suffix not in extensions:
             raise ValidationError(
-                "Ensure that the image file has an extension from the supported file extensions: %(extensions)s for %(image_type)s type image.",
+                "Ensure that the image file has an extension from the supported file extensions: %(extensions)s for image types: %(image_type)s.",
                 code='invalid_image_extension',
-                params={'extensions': extensions, 'image_type': self.image_type}
+                params={'extensions': tuple(extensions), 'image_type': tuple([x.value for x in self.image_types])}
             )

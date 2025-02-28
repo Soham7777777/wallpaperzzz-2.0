@@ -2,12 +2,18 @@ from pathlib import PurePath
 from django.db import models
 from django.core import validators
 from django.conf import settings
-from common.validators import MaxFileSizeValidator
-from common.utils import FileUploadPathGenerator
+from common.validators import MaxFileSizeValidator, ImageTypeFileExtensionsValidator
+from common.utils import FileUploadPathGenerator, ImageType
 from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
 from adminapp.fields import WallpaperDimensionField
+
+
+class _SettingsManager(models.Manager["SettingsStore"]):
+    
+    def get(self) -> "SettingsStore":
+        return self.get_or_create(key='BASE_SETTINGS')[0]
 
 
 class Category(AbstractBaseModel):
@@ -30,7 +36,26 @@ class Category(AbstractBaseModel):
         upload_to=FileUploadPathGenerator(PurePath('category_thumbnails'), 'thumbnail'),
         validators=[
             MaxFileSizeValidator(settings.MAX_FILE_SIZE),
-            validators.FileExtensionValidator(('png', 'apng')),
+            ImageTypeFileExtensionsValidator((ImageType.PNG, ImageType.JPEG))
+        ],
+    )
+
+
+class WallpaperGroup(AbstractBaseModel):
+    pass
+
+
+class Wallpaper(AbstractBaseModel):
+
+    image = models.ImageField(
+        verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
+        blank=False,
+        null=False,
+        unique=True,
+        upload_to=FileUploadPathGenerator(PurePath('wallpapers'), 'wallpaper'),
+        validators=[
+            MaxFileSizeValidator(settings.MAX_FILE_SIZE),
+            validators.FileExtensionValidator(('png',)),
         ],
     )
 
@@ -47,10 +72,22 @@ class WallpaperDimension(AbstractBaseModel):
         ]
 
 
-class _SettingsManager(models.Manager["SettingsStore"]):
-    
-    def get(self) -> "SettingsStore":
-        return self.get_or_create(key='BASE_SETTINGS')[0]
+class WallpaperTag(AbstractBaseModel):
+
+    value = models.CharField(
+        blank=False,
+        null=False,
+        max_length=32,
+        validators=[
+            validators.MinLengthValidator(2),
+            name_regex_validator,
+        ]
+    )
+    wallpaper_group = models.ForeignKey(
+        WallpaperGroup,
+        on_delete=models.CASCADE,
+        related_name='tags',
+    )
 
 
 class SettingsStore(AbstractBaseModel):
@@ -109,40 +146,3 @@ class AllowedImageExtensions(AbstractBaseModel):
     #     null=False,
     #     default=True
     # )
-
-
-class WallpaperGroup(AbstractBaseModel):
-    pass
-
-
-class Wallpaper(AbstractBaseModel):
-
-    image = models.ImageField(
-        verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
-        blank=False,
-        null=False,
-        unique=True,
-        upload_to=FileUploadPathGenerator(PurePath('wallpapers'), 'wallpaper'),
-        validators=[
-            MaxFileSizeValidator(settings.MAX_FILE_SIZE),
-            validators.FileExtensionValidator(('png',)),
-        ],
-    )
-
-
-class WallpaperTag(AbstractBaseModel):
-
-    value = models.CharField(
-        blank=False,
-        null=False,
-        max_length=32,
-        validators=[
-            validators.MinLengthValidator(2),
-            name_regex_validator,
-        ]
-    )
-    wallpaper_group = models.ForeignKey(
-        WallpaperGroup,
-        on_delete=models.CASCADE,
-        related_name='tags',
-    )
