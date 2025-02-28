@@ -1,4 +1,6 @@
+from collections.abc import Mapping
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import PurePath
 import string
 import time
@@ -38,3 +40,63 @@ class FileUploadPathGenerator:
     @staticmethod
     def _get_timestamp() -> str:
         return ''.join(str(time.time()).split('.'))
+
+
+class ImageType(StrEnum):
+    PNG = 'PNG'
+    JPEG = 'JPEG'
+    BMP = 'BMP'
+    GIF = 'GIF'
+    ICO = 'ICO'
+    PDF = 'PDF'
+    TIFF = 'TIFF'
+    WEBP = 'WEBP'
+
+
+_file_extensions_for_image_type: Mapping[str, tuple[str, ...]] = {
+    'BLP': ('.blp',),
+    'BMP': ('.bmp',),
+    'BUFR': ('.bufr',),
+    'CUR': ('.cur',),
+    'DCX': ('.dcx',),
+    'DDS': ('.dds',),
+    'DIB': ('.dib',),
+    'EPS': ('.ps', '.eps'),
+    'FITS': ('.fit', '.fits'),
+    'FLI': ('.fli', '.flc'),
+    'FTEX': ('.ftc', '.ftu'),
+    'GBR': ('.gbr',),
+    'GIF': ('.gif',),
+    'GRIB': ('.grib',),
+    'HDF5': ('.h5', '.hdf'),
+    'ICNS': ('.icns',),
+    'ICO': ('.ico',),
+    'IM': ('.im',),
+    'IPTC': ('.iim',),
+    'JPEG': ('.jfif', '.jpe', '.jpg', '.jpeg'),
+    'JPEG2000': ('.jp2', '.j2k', '.jpc', '.jpf', '.jpx', '.j2c'),
+    'MPEG': ('.mpg', '.mpeg'),
+    'MPO': ('.mpo',),
+    'MSP': ('.msp',),
+    'PALM': ('.palm',),
+    'PCD': ('.pcd',),
+    'PCX': ('.pcx',),
+    'PDF': ('.pdf',),
+    'PIXAR': ('.pxr',),
+    'PNG': ('.png', '.apng'),
+    'PPM': ('.pbm', '.pgm', '.ppm', '.pnm', '.pfm'),
+    'PSD': ('.psd',),
+    'QOI': ('.qoi',),
+    'SGI': ('.bw', '.rgb', '.rgba', '.sgi'),
+    'SUN': ('.ras',),
+    'TGA': ('.tga', '.icb', '.vda', '.vst'),
+    'TIFF': ('.tif', '.tiff'),
+    'WEBP': ('.webp',),
+    'WMF': ('.wmf', '.emf'),
+    'XBM': ('.xbm',),
+    'XPM': ('.xpm',)
+}
+
+
+def get_file_extensions_for_image_type(image_type: ImageType) -> tuple[str, ...]:
+    return _file_extensions_for_image_type[image_type]

@@ -47,7 +47,7 @@ class WallpaperDimension(AbstractBaseModel):
         ]
 
 
-class SettingsManager(models.Manager["SettingsStore"]):
+class _SettingsManager(models.Manager["SettingsStore"]):
     
     def get(self) -> "SettingsStore":
         return self.get_or_create(key='BASE_SETTINGS')[0]
@@ -78,7 +78,7 @@ class SettingsStore(AbstractBaseModel):
         default=True
     )
     
-    settings = SettingsManager()
+    settings: models.Manager["SettingsStore"] = _SettingsManager()
 
 
 class AllowedImageExtensions(AbstractBaseModel):

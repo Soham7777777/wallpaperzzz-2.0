@@ -1,8 +1,12 @@
+from collections.abc import Mapping
 from dataclasses import dataclass
+from enum import StrEnum
+from pathlib import PurePath
 from typing import ClassVar, Literal
 from django.utils.deconstruct import deconstructible
-from django.db.models.fields.files import FieldFile
+from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.core.exceptions import ValidationError
+from common.utils import ImageType, get_file_extensions_for_image_type
 
 
 @deconstructible
@@ -26,4 +30,21 @@ class MaxFileSizeValidator:
                 "Ensure that the file size is less than or equal to %(max_size)s bytes.",
                 code='file_too_large',
                 params={'max_size': str(self.max_file_size)},
+            )
+
+
+@deconstructible
+@dataclass
+class ImageTypeFileExtensionsValidator:
+
+    image_type: ImageType
+
+
+    def __call__(self, value: ImageFieldFile) -> None:
+        extensions = get_file_extensions_for_image_type(self.image_type)
+        if PurePath(value.path).suffix not in extensions:
+            raise ValidationError(
+                "Ensure that the image file has an extension from the supported file extensions: %(extensions)s for %(image_type)s type image.",
+                code='invalid_image_extension',
+                params={'extensions': extensions, 'image_type': self.image_type}
             )
