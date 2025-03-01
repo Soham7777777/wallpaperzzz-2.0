@@ -3,7 +3,7 @@ from django.db import models
 from django.core import validators
 from django.conf import settings
 from common.validators import MaxFileSizeValidator, ImageTypeFileExtensionsValidator
-from common.utils import FileUploadPathGenerator, ImageType
+from common.utils import FileUploadPathGenerator, ImageType, get_file_extensions_for_image_type
 from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
@@ -11,9 +11,22 @@ from adminapp.fields import WallpaperDimensionField
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
-    
+
     def get(self) -> "SettingsStore":
         return self.get_or_create(key='BASE_SETTINGS')[0]
+
+
+    def get_allowed_image_file_extensions(self) -> tuple[str, ...]:
+        settings = self.get()
+        allowed_image_file_extensions: list[str] = []
+
+        for field in SettingsStore._meta.get_fields():
+            if (isinstance(field, models.BooleanField)) and (field.db_column in ImageType) and (getattr(settings, field.name) is True):
+                allowed_image_file_extensions += [
+                    *get_file_extensions_for_image_type(getattr(ImageType, str(field.db_column)))
+                ]
+        
+        return tuple(allowed_image_file_extensions)
 
 
 class Category(AbstractBaseModel):
@@ -114,35 +127,23 @@ class SettingsStore(AbstractBaseModel):
         null=False,
         default=True
     )
-    
-    settings: models.Manager["SettingsStore"] = _SettingsManager()
-
-
-class AllowedImageExtensions(AbstractBaseModel):
-    
-    settings_store = models.OneToOneField(
-        SettingsStore,
-        on_delete=models.CASCADE,
-        related_name='allowed_image_extensions',
-        primary_key=True
+    png = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        db_column=ImageType.PNG,
     )
-    # png = models.BooleanField(
-    #     blank=False,
-    #     null=False,
-    #     default=True
-    # )
-    # png = models.BooleanField(
-    #     blank=False,
-    #     null=False,
-    #     default=True
-    # )
-    # png = models.BooleanField(
-    #     blank=False,
-    #     null=False,
-    #     default=True
-    # )
-    # png = models.BooleanField(
-    #     blank=False,
-    #     null=False,
-    #     default=True
-    # )
+    jpeg = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        db_column=ImageType.JPEG,
+    )
+    webp = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        db_column=ImageType.WEBP,
+    )
+
+    settings: models.Manager["SettingsStore"] = _SettingsManager()

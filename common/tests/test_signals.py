@@ -112,7 +112,7 @@ class TestDeleteOldFileOnPreSaveSignal(SimpleTestCase):
                             spec_set = str,
                             find = Mock(return_value = 0),
                         ),
-                    )
+                    ),
                 ],
             ),
         ),
