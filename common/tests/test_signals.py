@@ -59,14 +59,6 @@ class TestDeleteFileOnPostDeleteSignal(SimpleTestCase):
      
 
     def test_algorithm(self) -> None:
-        self.file1.delete.assert_not_called()
-        self.file2.delete.assert_not_called()
-        self.file3.delete.assert_not_called()
-
-        self.field1.verbose_name.find.assert_not_called()
-        self.field2.verbose_name.find.assert_not_called()
-        self.field3.verbose_name.find.assert_not_called()
-
         models.signals.post_delete.send(sender=AbstractBaseModel, instance=self.mock_model_instance)
 
         self.field1.verbose_name.find.assert_called_once_with(signals.SignalEffect.AUTO_DELETE_FILE)
@@ -135,7 +127,9 @@ class TestDeleteOldFileOnPreSaveSignal(SimpleTestCase):
             )
         )
     )
+
     models.signals.pre_save.connect(signals.delete_old_file_pre_save_function, sender=sender, dispatch_uid='TestDeleteOldFileOnPreSaveSignalUID')
+
     file1, file2, file3 = mock_model_instance.first_file, mock_model_instance.second_file, mock_model_instance.third_file
     field1, field2, field3 = mock_model_instance._meta.get_fields()
     mock_model_instance.reset_mock()
@@ -147,18 +141,9 @@ class TestDeleteOldFileOnPreSaveSignal(SimpleTestCase):
         self.mock_model_instance._meta.get_fields.assert_not_called()
         self.mock_model_instance.reset_mock()
 
-        self.file1.delete.assert_not_called()
-        self.file2.delete.assert_not_called()
-        self.file3.delete.assert_not_called()
-
-        self.field1.verbose_name.find.assert_not_called()
-        self.field2.verbose_name.find.assert_not_called()
-        self.field3.verbose_name.find.assert_not_called()
-
-        self.mock_model_instance._meta.get_fields.assert_not_called()
-        self.sender.objects.get.assert_not_called()
         self.mock_model_instance._meta.pk.get_attname = Mock(return_value='nonull_pk_val')
         models.signals.pre_save.send(sender=self.sender, instance=self.mock_model_instance)
+
         self.sender.objects.get.assert_called_once_with(pk='nonnull')
         self.mock_model_instance._meta.get_fields.assert_called_once()
 

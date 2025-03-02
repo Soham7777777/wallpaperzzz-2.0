@@ -1,4 +1,5 @@
 from pathlib import PurePath
+from typing import Self
 from django.db import models
 from django.core import validators
 from django.conf import settings
@@ -8,16 +9,17 @@ from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
 from adminapp.fields import WallpaperDimensionField
+from django.db.models.fields.files import ImageFieldFile
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
 
-    def get(self) -> "SettingsStore":
+    def fetch_settings(self: Self) -> "SettingsStore":
         return self.get_or_create(key='BASE_SETTINGS')[0]
 
 
-    def get_allowed_image_file_extensions(self) -> tuple[str, ...]:
-        settings = self.get()
+    def fetch_allowed_image_file_extensions(self) -> tuple[str, ...]:
+        settings = self.fetch_settings()
         allowed_image_file_extensions: list[str] = []
 
         for field in SettingsStore._meta.get_fields():
@@ -60,6 +62,18 @@ class WallpaperGroup(AbstractBaseModel):
 
 class Wallpaper(AbstractBaseModel):
 
+    @staticmethod
+    def _validate_image_max_file_size(value: ImageFieldFile) -> None:
+        upper_limit = SettingsStore.settings.fetch_settings().maximum_image_file_size * 1024
+        MaxFileSizeValidator(upper_limit)(value)
+    
+
+    @staticmethod
+    def _validate_image_file_extensions(value: ImageFieldFile) -> None:
+        extensions = SettingsStore.settings.fetch_allowed_image_file_extensions()
+        validators.FileExtensionValidator(extensions)(value)
+
+
     image = models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
         blank=False,
@@ -67,11 +81,11 @@ class Wallpaper(AbstractBaseModel):
         unique=True,
         upload_to=FileUploadPathGenerator(PurePath('wallpapers'), 'wallpaper'),
         validators=[
-            MaxFileSizeValidator(settings.MAX_FILE_SIZE),
-            validators.FileExtensionValidator(('png',)),
+            _validate_image_max_file_size,
+            _validate_image_file_extensions
         ],
     )
-
+    
 
 class WallpaperDimension(AbstractBaseModel):
     
@@ -146,4 +160,4 @@ class SettingsStore(AbstractBaseModel):
         db_column=ImageType.WEBP,
     )
 
-    settings: models.Manager["SettingsStore"] = _SettingsManager()
+    settings: _SettingsManager = _SettingsManager()

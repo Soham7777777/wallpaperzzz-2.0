@@ -3,7 +3,7 @@ from django_stubs_ext.db.models import TypedModelMeta
 
 
 class AbstractBaseModel(models.Model):
-    objects: models.Manager[models.Model] = models.Manager()
+    objects: models.Manager["AbstractBaseModel"] = models.Manager()
 
     class Meta(TypedModelMeta):
         abstract = True
