@@ -1,5 +1,5 @@
 from pathlib import PurePath
-from typing import Self
+from typing import Self, cast
 from django.db import models
 from django.core import validators
 from django.conf import settings
@@ -10,6 +10,16 @@ from common.signals import SignalEffect
 from common.models import AbstractBaseModel
 from adminapp.fields import WallpaperDimensionField
 from django.db.models.fields.files import ImageFieldFile
+
+
+def validate_image_max_file_size(value: ImageFieldFile) -> None:
+    upper_limit = SettingsStore.settings.fetch_settings().maximum_image_file_size * 1024
+    MaxFileSizeValidator(upper_limit)(value)
+    
+
+def validate_image_file_extensions(value: ImageFieldFile) -> None:
+    extensions = SettingsStore.settings.fetch_allowed_image_file_extensions()
+    validators.FileExtensionValidator(extensions)(value)
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
@@ -57,22 +67,38 @@ class Category(AbstractBaseModel):
 
 
 class WallpaperGroup(AbstractBaseModel):
-    pass
+
+    name = models.CharField(
+        blank=False,
+        null=False,
+        max_length=32,
+        validators=[
+            validators.MinLengthValidator(2),
+            name_regex_validator,
+        ]
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='wallpaper_groups',
+        blank=False,
+        null=False,
+    )
+    thumbnail = models.ImageField(
+        verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
+        blank=False,
+        null=False,
+        unique=True,
+        upload_to=FileUploadPathGenerator(PurePath('wallpaper_group_thumbnail'), 'thumbnail'),
+        validators=[
+            MaxFileSizeValidator(settings.MAX_FILE_SIZE),
+            ImageTypeFileExtensionsValidator((ImageType.PNG, ImageType.JPEG))
+        ],
+        editable=False
+    )
 
 
 class Wallpaper(AbstractBaseModel):
-
-    @staticmethod
-    def _validate_image_max_file_size(value: ImageFieldFile) -> None:
-        upper_limit = SettingsStore.settings.fetch_settings().maximum_image_file_size * 1024
-        MaxFileSizeValidator(upper_limit)(value)
-    
-
-    @staticmethod
-    def _validate_image_file_extensions(value: ImageFieldFile) -> None:
-        extensions = SettingsStore.settings.fetch_allowed_image_file_extensions()
-        validators.FileExtensionValidator(extensions)(value)
-
 
     image = models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
@@ -81,10 +107,31 @@ class Wallpaper(AbstractBaseModel):
         unique=True,
         upload_to=FileUploadPathGenerator(PurePath('wallpapers'), 'wallpaper'),
         validators=[
-            _validate_image_max_file_size,
-            _validate_image_file_extensions
+            validate_image_max_file_size,
+            validate_image_file_extensions
         ],
     )
+    dimension = models.ForeignKey(
+        "WallpaperDimension",
+        on_delete=models.CASCADE,
+        related_name='wallpapers',
+        editable=False,
+        blank=False,
+        null=False,
+    )
+    wallpaper_group = models.ForeignKey(
+        WallpaperGroup,
+        on_delete=models.CASCADE,
+        related_name='wallpapers',
+        blank=False,
+        null=False,
+    )
+
+
+    def clean(self) -> None:
+        wallpaper = cast(ImageFieldFile, self.image)
+        print('*'*40)
+        print(wallpaper.width, wallpaper.height)
     
 
 class WallpaperDimension(AbstractBaseModel):
@@ -114,6 +161,8 @@ class WallpaperTag(AbstractBaseModel):
         WallpaperGroup,
         on_delete=models.CASCADE,
         related_name='tags',
+        blank=False,
+        null=False,
     )
 
 
