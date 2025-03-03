@@ -7,7 +7,7 @@ django.setup()
 
 
 from pathlib import Path
-from adminapp.models import Category, SettingsStore, Wallpaper, WallpaperGroup
+from adminapp.models import Category, SettingsStore, Wallpaper, WallpaperGroup, WallpaperDimension
 from django.core.files.images import ImageFile
 
 
@@ -23,6 +23,8 @@ wpg = WallpaperGroup(
         Path('favorite.jpeg').open("rb"),
     ),
 )
+
+allowed_dimension = WallpaperDimension(width=1024, height=772)
 
 wallpaper = Wallpaper(
     image=ImageFile(

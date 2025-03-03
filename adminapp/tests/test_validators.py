@@ -22,7 +22,7 @@ class TestDynamicMaxFileSizeValidator(SimpleTestCase):
 class TestDynamicImageFileExtensionsValidator(SimpleTestCase):
 
     mock_image_field_file_instance = create_autospec(ImageFieldFile, instance=True)
-    mock_extensions = Mock()
+    mock_extensions = ('.web', '.jpeg', '.png')
     mock_validator_function = Mock()
 
 
@@ -30,5 +30,5 @@ class TestDynamicImageFileExtensionsValidator(SimpleTestCase):
     @patch('adminapp.models.SettingsStore.settings.fetch_allowed_image_file_extensions', return_value = mock_extensions)
     def test_function(self, mock_fetch_allowed_image_file_extensions: Mock, mock_file_extension_validator_class: Mock) -> None:
         validate_image_file_extensions(self.mock_image_field_file_instance)
-        mock_file_extension_validator_class.assert_called_once_with(self.mock_extensions)
+        mock_file_extension_validator_class.assert_called_once_with(tuple(x[1:] for x in self.mock_extensions))
         self.mock_validator_function.assert_called_once_with(self.mock_image_field_file_instance)

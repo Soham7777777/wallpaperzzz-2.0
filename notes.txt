@@ -1,7 +1,3 @@
 - The file from the media root are served statically which means that its accessible without user login
 
-- Writing compression logic and validating dimensions of wallpaper model and also implementing soft delete and hard delete
-
-- Fixing the validate_image_file_extensions, it uses fetch_allowed_image_file_extensions that returns tuple of extensions with '.' but FileExtensionValidator validates extensions without '.'
-
-- checking Foreignkey having null issue on full_clean
+- Writing compression logic, adding `compressed` column to true

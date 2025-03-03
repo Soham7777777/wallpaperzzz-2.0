@@ -10,6 +10,7 @@ from common.signals import SignalEffect
 from common.models import AbstractBaseModel
 from adminapp.fields import WallpaperDimensionField
 from django.db.models.fields.files import ImageFieldFile
+from django.core.exceptions import ValidationError
 
 
 def validate_image_max_file_size(value: ImageFieldFile) -> None:
@@ -19,7 +20,7 @@ def validate_image_max_file_size(value: ImageFieldFile) -> None:
 
 def validate_image_file_extensions(value: ImageFieldFile) -> None:
     extensions = SettingsStore.settings.fetch_allowed_image_file_extensions()
-    validators.FileExtensionValidator(extensions)(value)
+    validators.FileExtensionValidator(tuple(x[1:] for x in extensions))(value)
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
@@ -81,8 +82,6 @@ class WallpaperGroup(AbstractBaseModel):
         Category,
         on_delete=models.CASCADE,
         related_name='wallpaper_groups',
-        blank=False,
-        null=False,
     )
     thumbnail = models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
@@ -113,26 +112,32 @@ class Wallpaper(AbstractBaseModel):
     )
     dimension = models.ForeignKey(
         "WallpaperDimension",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='wallpapers',
         editable=False,
-        blank=False,
-        null=False,
+        null=True
     )
     wallpaper_group = models.ForeignKey(
         WallpaperGroup,
         on_delete=models.CASCADE,
         related_name='wallpapers',
-        blank=False,
-        null=False,
     )
 
 
     def clean(self) -> None:
         wallpaper = cast(ImageFieldFile, self.image)
-        print('*'*40)
-        print(wallpaper.width, wallpaper.height)
-    
+
+        for allowed_dimension in WallpaperDimension.objects.all():
+            if (wallpaper.width, wallpaper.height) == (allowed_dimension.width, allowed_dimension.height):
+                self.dimension = allowed_dimension
+                break
+        else:
+            raise ValidationError(
+                "Ensure the image dimensions match one of the allowed values, The current dimensions: %(width)s x %(height)s are not supported.",
+                code="invalid_image_dimensions",
+                params={"width": str(wallpaper.width), "height": str(wallpaper.height)}
+            )
+
 
 class WallpaperDimension(AbstractBaseModel):
     
@@ -144,6 +149,13 @@ class WallpaperDimension(AbstractBaseModel):
         constraints = [
             models.UniqueConstraint(fields=['width', 'height'], name="unique_width_height")
         ]
+
+    objects: models.Manager["WallpaperDimension"] = models.Manager()
+
+
+    def delete_with_related_wallpapers(self) -> None:
+        self.wallpapers.all().delete()
+        self.delete()
 
 
 class WallpaperTag(AbstractBaseModel):
@@ -161,8 +173,6 @@ class WallpaperTag(AbstractBaseModel):
         WallpaperGroup,
         on_delete=models.CASCADE,
         related_name='tags',
-        blank=False,
-        null=False,
     )
 
 
