@@ -1,7 +1,5 @@
 from django.core import validators
-from django.db.models import PositiveIntegerField, BooleanField
-
-from common.utils import ImageType
+from django.db.models import PositiveIntegerField
 
 
 class WallpaperDimensionField(PositiveIntegerField):

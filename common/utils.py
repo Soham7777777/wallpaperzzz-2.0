@@ -1,12 +1,16 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import StrEnum
+import io
 from pathlib import PurePath
 import string
 import time
 from typing import ClassVar, Literal
 from django.db import models
 from django.utils.deconstruct import deconstructible
+from django.core.files.images import ImageFile
+from PIL import Image, ImageOps
+from typing import BinaryIO
 
 
 @deconstructible
@@ -42,7 +46,7 @@ class FileUploadPathGenerator:
         return ''.join(str(time.time()).split('.'))
 
 
-class ImageType(StrEnum):
+class ImageFormat(StrEnum):
     PNG = 'PNG'
     JPEG = 'JPEG'
     BMP = 'BMP'
@@ -53,7 +57,7 @@ class ImageType(StrEnum):
     WEBP = 'WEBP'
 
 
-_file_extensions_for_image_type: Mapping[str, tuple[str, ...]] = {
+_file_extensions_for_image_format: Mapping[str, tuple[str, ...]] = {
     'BLP': ('.blp',),
     'BMP': ('.bmp',),
     'BUFR': ('.bufr',),
@@ -98,5 +102,39 @@ _file_extensions_for_image_type: Mapping[str, tuple[str, ...]] = {
 }
 
 
-def get_file_extensions_for_image_type(image_type: ImageType) -> tuple[str, ...]:
-    return _file_extensions_for_image_type[image_type]
+def get_file_extensions_for_image_format(image_format: ImageFormat) -> tuple[str, ...]:
+    return _file_extensions_for_image_format[image_format]
+
+
+def get_format_for_image_extension(image_extension: str) -> ImageFormat:
+    for format, extensions in _file_extensions_for_image_format.items():
+        if image_extension in extensions:
+            return ImageFormat[format]
+    else:
+        raise ValueError(f"Image extension {image_extension} is not recognized.")
+
+
+_compression_params = dict(
+    # JPEG params
+    quality=10,
+    optimize=True,
+    dpi=(72, 72),
+
+    # PNG params
+    compress_level=9,
+
+    # WEBP params
+    method=6
+)
+def compress_image_file(image_file: BinaryIO | ImageFile) -> io.BytesIO:
+    in_memory_file = io.BytesIO()
+    with Image.open(image_file) as img:
+        img.save(in_memory_file, format=img.format, **_compression_params)
+    return in_memory_file
+
+
+def generate_thumbnail(image_file: BinaryIO | ImageFile, size: tuple[int, int]) -> io.BytesIO:
+    in_memory_file = io.BytesIO()
+    with Image.open(image_file) as img:
+        ImageOps.pad(img, size, color='#ffffff').save(in_memory_file, format=img.format)
+    return in_memory_file

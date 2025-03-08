@@ -1,12 +1,12 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
-from enum import StrEnum
 from pathlib import PurePath
 from typing import ClassVar, Literal
 from django.utils.deconstruct import deconstructible
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.core.exceptions import ValidationError
-from common.utils import ImageType, get_file_extensions_for_image_type
+from common.utils import ImageFormat, get_file_extensions_for_image_format
+from PIL import Image
 
 
 @deconstructible
@@ -35,19 +35,26 @@ class MaxFileSizeValidator:
 
 @deconstructible
 @dataclass
-class ImageTypeFileExtensionsValidator:
+class ImageFormatAndFileExtensionsValidator:
 
-    image_types: Sequence[ImageType]
+    image_types: Sequence[ImageFormat]
 
 
     def __call__(self, value: ImageFieldFile) -> None:
-        extensions: list[str] = []
-        for image_type in self.image_types:
-            extensions += [*get_file_extensions_for_image_type(image_type)]
+        with Image.open(value.file) as img:
+            image_format = str(img.format)
         
+        if image_format not in self.image_types:
+            raise ValidationError(
+                "Ensure the image file is in a supported format such as %(formats)s.",
+                code='invalid_image_file_format',
+                params={'formats': tuple(*ImageFormat)}
+            )
+
+        extensions = get_file_extensions_for_image_format(ImageFormat[image_format])
         if PurePath(value.path).suffix not in extensions:
             raise ValidationError(
-                "Ensure that the image file has an extension from the supported file extensions: %(extensions)s for image types: %(image_type)s.",
-                code='invalid_image_extension',
-                params={'extensions': tuple(extensions), 'image_type': tuple([x.value for x in self.image_types])}
+                "Ensure the image file has a valid extension(e.g. %(extensions)s) corresponding to its format: %(format)s.",
+                code='mismatch_between_image_file_extension_and_format',
+                params={'extensions': str(extensions), 'format': image_format}
             )
