@@ -37,18 +37,18 @@ class MaxFileSizeValidator:
 @dataclass
 class ImageFormatAndFileExtensionsValidator:
 
-    image_types: Sequence[ImageFormat]
+    image_formats: Sequence[ImageFormat]
 
 
     def __call__(self, value: ImageFieldFile) -> None:
         with Image.open(value.file) as img:
             image_format = str(img.format)
         
-        if image_format not in self.image_types:
+        if image_format not in self.image_formats:
             raise ValidationError(
                 "Ensure the image file is in a supported format such as %(formats)s.",
                 code='invalid_image_file_format',
-                params={'formats': tuple(*ImageFormat)}
+                params={'formats': tuple([*ImageFormat])}
             )
 
         extensions = get_file_extensions_for_image_format(ImageFormat[image_format])

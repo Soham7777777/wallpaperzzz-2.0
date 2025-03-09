@@ -2,40 +2,26 @@ import preshell
 from pathlib import Path
 from adminapp.models import Category, SettingsStore, Wallpaper, WallpaperGroup, WallpaperDimension
 from django.core.files.images import ImageFile
-from common.utils import compress_image_file, ImageFormat
+from common.utils import ImageFormat
 from PIL import Image
 
-
-category1 = Category(name="first category", thumbnail=ImageFile(Path('./fixture_files/Category1/thumbnail.png').open("rb")))
-category2 = Category(name="first category", thumbnail=ImageFile(Path('./fixture_files/Category2/thumbnail.png').open("rb")))
+category1 = Category(name="first category", thumbnail=ImageFile(Path('nails-category.jpg').open("rb")))
 
 settings = SettingsStore.settings.fetch_settings()
-
-wpg = WallpaperGroup(
-    description = 'world heritage',
-    category = category1,
-)
-
-WallpaperGroup()
-
-wd = WallpaperDimension(width=550, height=368)
+wpg = WallpaperGroup()
+wd = WallpaperDimension(width=2848, height=1899)
 
 wallpaper = Wallpaper(
     image = ImageFile(
-        Path("./fixture_files/stock_photos/landscape.webp").open('rb')
+        Path("nails-wallpaper.jpg").open('rb')
     ),
-    wallpaper_group = wpg,
-    dimension = wd
+    dimension = wd,
+    wallpaper_group = wpg
 )
 
-# original_png = ImageFile(Path('./fixture_files/Category3/thumbnail.png').open("rb"))
-# original_jpeg = ImageFile(Path('./fixture_files/stock_photos/woman-with-flowers.jpg').open("rb"))
-# original_webp = ImageFile(Path('./fixture_files/stock_photos/landscape.webp').open("rb"))
-
-# compressed_png = compress_image_file(original_png, ImageFormat.PNG)
-# compressed_jpeg = compress_image_file(original_jpeg, ImageFormat.JPEG)
-# compressed_webp = compress_image_file(original_webp, ImageFormat.WEBP)
-
-
 category1.save()
+wpg.save()
 wd.save()
+
+x = 1
+x = 'str'

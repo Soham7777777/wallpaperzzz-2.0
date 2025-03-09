@@ -1,8 +1,1 @@
 - The file from the media root are served statically which means that its accessible without user login
-
-- Tags and WallpapgerGroup as many-to-many relationship, the admin will add new tags in settings page, those tags can be applied to a WallpaperGroup when adding new wallpaper
-    - Writing custom manager method to create a wallpaper group can be one solution
-
-- Ensuring that at least one wallpaper is uploaded in correct way
-
-- Adding dynamic setting for compression quality

@@ -9,8 +9,9 @@ from typing import ClassVar, Literal
 from django.db import models
 from django.utils.deconstruct import deconstructible
 from django.core.files.images import ImageFile
-from PIL import Image, ImageOps
+from PIL import Image
 from typing import BinaryIO
+from PIL.Image import Resampling
 
 
 @deconstructible
@@ -114,27 +115,33 @@ def get_format_for_image_extension(image_extension: str) -> ImageFormat:
         raise ValueError(f"Image extension {image_extension} is not recognized.")
 
 
-_compression_params = dict(
-    # JPEG params
-    quality=10,
-    optimize=True,
-    dpi=(72, 72),
-
-    # PNG params
-    compress_level=9,
-
-    # WEBP params
+thumbnail_webp_params = dict(
+    quality=0,
+    alpha_quality=0,
     method=6
 )
-def compress_image_file(image_file: BinaryIO | ImageFile) -> io.BytesIO:
+
+dummy_webp_params = dict(
+    quality=40,
+    alpha_quality=0,
+    method=6
+)
+
+
+def generate_dummy_webp_from_jpeg(image_file: ImageFile) -> io.BytesIO:
     in_memory_file = io.BytesIO()
     with Image.open(image_file) as img:
-        img.save(in_memory_file, format=img.format, **_compression_params)
+        if img.format != ImageFormat.JPEG:
+            raise ValueError("The image must be in JPEG format.")
+        img.save(in_memory_file, format=ImageFormat.WEBP, **dummy_webp_params)
     return in_memory_file
 
 
-def generate_thumbnail(image_file: BinaryIO | ImageFile, size: tuple[int, int]) -> io.BytesIO:
+def generate_thumbnail_webp_from_jpeg(image_file: ImageFile, size: tuple[int, int]) -> io.BytesIO:
     in_memory_file = io.BytesIO()
     with Image.open(image_file) as img:
-        ImageOps.pad(img, size, color='#ffffff').save(in_memory_file, format=img.format)
+        if img.format != ImageFormat.JPEG:
+            raise ValueError("The image must be in JPEG format.")
+        img.thumbnail(size, Resampling.LANCZOS, 3.0)
+        img.save(in_memory_file, format=ImageFormat.WEBP, **thumbnail_webp_params)
     return in_memory_file

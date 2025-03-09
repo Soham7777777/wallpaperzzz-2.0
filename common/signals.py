@@ -25,4 +25,6 @@ def delete_old_file_pre_save_function(sender: type[AbstractBaseModel], **kwargs:
         for file_field in instance._meta.get_fields():
             if isinstance(file_field, models.FileField) and file_field.verbose_name.find(SignalEffect.AUTO_DELETE_OLD_FILE) != -1:
                 old_file = cast(FieldFile, getattr(sender.objects.get(pk=pk_val), file_field.get_attname()))
-                old_file.delete(save=False)
+                current_file = cast(FieldFile, getattr(instance, file_field.get_attname()))
+                if current_file.name != old_file.name:
+                    old_file.delete(save=False)

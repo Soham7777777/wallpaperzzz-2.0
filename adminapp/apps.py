@@ -12,13 +12,9 @@ class AdminappConfig(AppConfig):
 
         post_delete.connect(signals.delete_file_post_delete_function, sender='adminapp.Category', dispatch_uid='CATEGORY_DELETE_FILES_POST_DELETE')
 
-        post_delete.connect(signals.delete_file_post_delete_function, sender='adminapp.WallpaperGroup', dispatch_uid='WALLPAPERGROUP_DELETE_FILES_POST_DELETE')
-
-        post_delete.connect(signals.delete_file_post_delete_function, sender='adminapp.Wallpaper', dispatch_uid='WALLPAPER_DELETE_FILES_POST_DELETE')
+        post_delete.connect(signals.delete_file_post_delete_function, sender='adminapp.Wallpaper', dispatch_uid='WALLPAPERGROUP_DELETE_FILES_POST_DELETE')
 
 
         pre_save.connect(signals.delete_old_file_pre_save_function, sender='adminapp.Category', dispatch_uid='CATEGORY_DELETE_OLD_FILES_PRE_SAVE')
-
-        pre_save.connect(signals.delete_old_file_pre_save_function, sender='adminapp.WallpaperGroup', dispatch_uid='WALLPAPERGROUP_DELETE_OLD_FILES_PRE_SAVE')
 
         pre_save.connect(signals.delete_old_file_pre_save_function, sender='adminapp.Wallpaper', dispatch_uid='WALLPAPER_DELETE_OLD_FILES_PRE_SAVE')
