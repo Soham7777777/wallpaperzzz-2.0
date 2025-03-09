@@ -223,7 +223,6 @@ class Wallpaper(AbstractBaseModel):
         self.image = cast(ImageFieldFile, self.image)
         self.thumbnail = cast(ImageFieldFile, self.thumbnail)
         self.dummy = cast(ImageFieldFile, self.dummy)
-        image_file = cast(ImageFile, self.image.file)
 
         try:
             self.dimension = WallpaperDimension.objects.get(width=self.image.width, height=self.image.height)
@@ -236,11 +235,11 @@ class Wallpaper(AbstractBaseModel):
         
         thumbnail = generate_thumbnail_webp_from_jpeg(self.image, (512, 512))
         self.thumbnail.delete()
-        self.thumbnail.save(wallpaper_thumbnail_upload_path_generator(self, 'thumbnail.webp'), ImageFile(thumbnail), save=False)
+        self.thumbnail.save(wallpaper_thumbnail_upload_path_generator(self, 'thumbnail.webp'), thumbnail, save=False)
 
         dummy = generate_dummy_webp_from_jpeg(self.image)
         self.dummy.delete()
-        self.dummy.save(wallpaper_dummy_upload_path_generator(self, 'dummy.webp'), ImageFile(dummy), save=False)
+        self.dummy.save(wallpaper_dummy_upload_path_generator(self, 'dummy.webp'), dummy, save=False)
 
 
 class WallpaperDimension(AbstractBaseModel):

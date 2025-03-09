@@ -128,20 +128,20 @@ dummy_webp_params = dict(
 )
 
 
-def generate_dummy_webp_from_jpeg(image_file: ImageFile) -> io.BytesIO:
+def generate_dummy_webp_from_jpeg(image_file: ImageFile) -> ImageFile:
     in_memory_file = io.BytesIO()
     with Image.open(image_file) as img:
         if img.format != ImageFormat.JPEG:
             raise ValueError("The image must be in JPEG format.")
         img.save(in_memory_file, format=ImageFormat.WEBP, **dummy_webp_params)
-    return in_memory_file
+    return ImageFile(in_memory_file)
 
 
-def generate_thumbnail_webp_from_jpeg(image_file: ImageFile, size: tuple[int, int]) -> io.BytesIO:
+def generate_thumbnail_webp_from_jpeg(image_file: ImageFile, size: tuple[int, int]) -> ImageFile:
     in_memory_file = io.BytesIO()
     with Image.open(image_file) as img:
         if img.format != ImageFormat.JPEG:
             raise ValueError("The image must be in JPEG format.")
         img.thumbnail(size, Resampling.LANCZOS, 3.0)
         img.save(in_memory_file, format=ImageFormat.WEBP, **thumbnail_webp_params)
-    return in_memory_file
+    return ImageFile(in_memory_file)
