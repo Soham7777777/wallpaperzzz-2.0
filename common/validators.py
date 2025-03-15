@@ -1,12 +1,13 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import PurePath
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, cast
 from django.utils.deconstruct import deconstructible
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.core.exceptions import ValidationError
-from common.utils import ImageFormat, get_file_extensions_for_image_format
+from common.image_utils import ImageFormat, get_file_extensions_for_image_format
 from PIL import Image
+from django.core.files.images import ImageFile
 
 
 @deconstructible
@@ -41,7 +42,8 @@ class ImageFormatAndFileExtensionsValidator:
 
 
     def __call__(self, value: ImageFieldFile) -> None:
-        with Image.open(value.file) as img:
+        image_file = cast(ImageFile, value.file)
+        with Image.open(image_file) as img:
             image_format = str(img.format)
         
         if image_format not in self.image_formats:

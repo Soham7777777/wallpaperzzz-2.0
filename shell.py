@@ -2,7 +2,7 @@ import preshell
 from pathlib import Path
 from adminapp.models import Category, SettingsStore, Wallpaper, WallpaperGroup, WallpaperDimension
 from django.core.files.images import ImageFile
-from common.utils import ImageFormat
+from common.image_utils import ImageFormat
 from PIL import Image
 
 category1 = Category(name="first category", thumbnail=ImageFile(Path('nails-category.jpg').open("rb")))
