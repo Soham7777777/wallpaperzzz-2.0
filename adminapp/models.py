@@ -49,7 +49,6 @@ class SettingsStore(AbstractBaseModel):
         ],
     )
     maximum_image_file_size = models.PositiveIntegerField(
-        null=False,
         default=1024 * 5,
         validators=[
             validators.MinValueValidator(1),
@@ -64,8 +63,6 @@ class SettingsStore(AbstractBaseModel):
 class Category(AbstractBaseModel):
 
     name = models.CharField(
-        blank=False,
-        null=False,
         unique=True,
         max_length=32,
         validators=[
@@ -74,8 +71,6 @@ class Category(AbstractBaseModel):
         ],
     )
     description = models.TextField(
-        blank=False,
-        null=False,
         unique=True,
         max_length=512,
         validators=[
@@ -85,7 +80,6 @@ class Category(AbstractBaseModel):
     )
     thumbnail = models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
-        null=False,
         unique=True,
         upload_to=category_thumbnail_upload_path_generator,
         validators=[
@@ -103,25 +97,24 @@ class Category(AbstractBaseModel):
 class WallpaperGroup(AbstractBaseModel):
 
     name = models.CharField(
-        blank=False,
-        null=True,
+        blank=True,
         max_length=64,
         validators=[
-            validators.MinLengthValidator(2),
             name_regex_validator,
         ],
+        default=''
     )
     description = models.TextField(
-        blank=False,
-        null=True,
+        blank=True,
         max_length=512,
         validators=[
-            validators.MinLengthValidator(2),
             validators.MaxLengthValidator(512),
-        ]
+        ],
+        default=''
     )
     category = models.ForeignKey(
         Category,
+        blank=True,
         null=True,
         on_delete=models.SET_NULL,
         related_name='wallpaper_groups',
@@ -136,35 +129,34 @@ class WallpaperGroup(AbstractBaseModel):
     objects: models.Manager["WallpaperGroup"] = models.Manager()
 
 
-    def clean(self) -> None:
-        wallpapers = self.wallpapers.all()
+    # We will use the below clean method on model form and not on model instance
+    # def clean(self) -> None:
+    #     wallpapers = self.wallpapers.all()
 
-        if not any(wallpapers):
-            raise ValidationError(
-                "Ensure that at least one wallpaper is uploaded.",
-                code="wallpaper_required"
-            )
+    #     if not any(wallpapers):
+    #         raise ValidationError(
+    #             "Ensure that at least one wallpaper is uploaded.",
+    #             code="wallpaper_required"
+    #         )
         
-        unique_dimensions = set()
-        for wallpaper in wallpapers:
-            dimension = wallpaper.dimension.width, wallpaper.dimension.height
-            if dimension in unique_dimensions:
-                raise ValidationError(
-                    "Ensure that each wallpaper has unique dimension.",
-                    code="duplicate_dimension"
-                )
-            unique_dimensions.add(dimension)
+    #     unique_dimensions = set()
+    #     for wallpaper in wallpapers:
+    #         dimension = wallpaper.dimension.width, wallpaper.dimension.height
+    #         if dimension in unique_dimensions:
+    #             raise ValidationError(
+    #                 "Ensure that each wallpaper has unique dimension.",
+    #                 code="duplicate_dimension"
+    #             )
+    #         unique_dimensions.add(dimension)
 
 
 class Wallpaper(AbstractBaseModel):
 
     download_count = models.PositiveIntegerField(
-        null=False,
         default=0,
     )
     image = models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
-        null=False,
         unique=True,
         upload_to=wallpaper_image_upload_path_generator,
         validators=[
@@ -175,14 +167,12 @@ class Wallpaper(AbstractBaseModel):
     )
     dummy_image=models.ImageField(
         verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
-        null=True,
-        unique=True,
+        blank=True,
         upload_to=wallpaper_dummy_upload_path_generator,
         validators=[
             MaxFileSizeValidator(500 * kb),
             ImageFormatAndFileExtensionsValidator((ImageFormat.WEBP, ))
         ],
-        default=None,
         max_length=256,
     )
     dimension = models.ForeignKey(
@@ -206,7 +196,7 @@ class Wallpaper(AbstractBaseModel):
             self.dimension = WallpaperDimension.objects.get(width=self.image.width, height=self.image.height)
         except WallpaperDimension.DoesNotExist:
             raise ValidationError(
-                "Ensure the image dimensions match one of the allowed values, The current dimensions: %(width)s x %(height)s are not supported.",
+                "Ensure the image dimensions match one of the allowed values, The current dimension: %(width)s x %(height)s is not supported.",
                 code="invalid_image_dimensions",
                 params={"width": str(self.image.width), "height": str(self.image.height)}
             )
@@ -231,8 +221,6 @@ class WallpaperDimension(AbstractBaseModel):
 class WallpaperTag(AbstractBaseModel):
 
     value = models.CharField(
-        blank=False,
-        null=False,
         max_length=32,
         validators=[
             validators.MinLengthValidator(2),

@@ -4,3 +4,6 @@
     - Frontend Image Cropping
     - Custom storage options like S3
     - Bad Image detection using AI
+
+- Bug in Django ORM:
+    - Wallpaper.dummy_image cannot be default to null in database, it defaults to empty string; this prevents having nullable column while having unique constrain on database level. The sqlite supports multiple null values for unique constrained column but Django ORM for FileField does not, thus its Bug.
