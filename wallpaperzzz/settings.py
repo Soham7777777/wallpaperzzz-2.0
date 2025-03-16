@@ -134,7 +134,7 @@ MEDIA_ROOT = '/home/soham/Playgrounds/django_playground/wallpaperzzz_2_0/uploads
 
 MEDIA_URL = '/media/'
 
-MAX_FILE_SIZE = 1 * mb
+MAX_FILE_SIZE = 5 * mb
 
 
 # Distributed Task Queue
@@ -148,3 +148,5 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_TASK_ACKS_LATE = True
 
 CELERY_TASK_TRACK_STARTED = True
+
+CELERY_WORKER_POOL_RESTARTS = True

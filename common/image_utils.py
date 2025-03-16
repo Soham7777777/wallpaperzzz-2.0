@@ -74,7 +74,7 @@ def get_image_format_for_file_extension(file_extension: str) -> ImageFormat:
 
 
 _webp_params = dict(
-    quality=90,
+    quality=20,
     alpha_quality=0,
     method=6
 )

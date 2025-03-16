@@ -8,7 +8,7 @@ Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls) # type: i
 
 django_stubs_ext.monkeypatch()
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wallpaperzzz.settings')
-
+os.environ.setdefault('FLOWER_UNAUTHENTICATED_API', 'true')
 app = Celery('wallpaperzzz')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
