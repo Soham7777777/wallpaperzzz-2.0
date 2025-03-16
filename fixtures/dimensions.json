@@ -1,0 +1,1090 @@
+[
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 1,
+        "fields": {
+            "app_label": "contenttypes",
+            "model": "contenttype"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 2,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "category"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 3,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "settingsstore"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 4,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "wallpapertag"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 5,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "wallpaperdimension"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 6,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "wallpapergroup"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 7,
+        "fields": {
+            "app_label": "adminapp",
+            "model": "wallpaper"
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 1,
+        "fields": {
+            "width": 3669,
+            "height": 2446
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 2,
+        "fields": {
+            "width": 5760,
+            "height": 3840
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 3,
+        "fields": {
+            "width": 2303,
+            "height": 3012
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 4,
+        "fields": {
+            "width": 3648,
+            "height": 2432
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 5,
+        "fields": {
+            "width": 2766,
+            "height": 3795
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 6,
+        "fields": {
+            "width": 8006,
+            "height": 5504
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 7,
+        "fields": {
+            "width": 3550,
+            "height": 4734
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 8,
+        "fields": {
+            "width": 6851,
+            "height": 4139
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 9,
+        "fields": {
+            "width": 3318,
+            "height": 4976
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 10,
+        "fields": {
+            "width": 3951,
+            "height": 5926
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 11,
+        "fields": {
+            "width": 3272,
+            "height": 4908
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 12,
+        "fields": {
+            "width": 8000,
+            "height": 6000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 13,
+        "fields": {
+            "width": 2500,
+            "height": 1667
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 14,
+        "fields": {
+            "width": 5617,
+            "height": 3744
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 15,
+        "fields": {
+            "width": 4912,
+            "height": 7360
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 16,
+        "fields": {
+            "width": 4376,
+            "height": 2917
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 17,
+        "fields": {
+            "width": 2741,
+            "height": 4109
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 18,
+        "fields": {
+            "width": 4560,
+            "height": 3040
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 19,
+        "fields": {
+            "width": 7360,
+            "height": 4912
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 20,
+        "fields": {
+            "width": 3694,
+            "height": 3087
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 21,
+        "fields": {
+            "width": 2563,
+            "height": 3840
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 22,
+        "fields": {
+            "width": 5184,
+            "height": 3456
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 23,
+        "fields": {
+            "width": 3888,
+            "height": 2592
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 24,
+        "fields": {
+            "width": 4806,
+            "height": 3199
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 25,
+        "fields": {
+            "width": 3648,
+            "height": 5472
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 26,
+        "fields": {
+            "width": 5777,
+            "height": 3851
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 27,
+        "fields": {
+            "width": 5520,
+            "height": 4000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 28,
+        "fields": {
+            "width": 8192,
+            "height": 5461
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 29,
+        "fields": {
+            "width": 3275,
+            "height": 2465
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 30,
+        "fields": {
+            "width": 2048,
+            "height": 1295
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 31,
+        "fields": {
+            "width": 3968,
+            "height": 2645
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 32,
+        "fields": {
+            "width": 4000,
+            "height": 5176
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 33,
+        "fields": {
+            "width": 4256,
+            "height": 2832
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 34,
+        "fields": {
+            "width": 3744,
+            "height": 5616
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 35,
+        "fields": {
+            "width": 3423,
+            "height": 4279
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 36,
+        "fields": {
+            "width": 2000,
+            "height": 1123
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 37,
+        "fields": {
+            "width": 6720,
+            "height": 4480
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 38,
+        "fields": {
+            "width": 4169,
+            "height": 7412
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 39,
+        "fields": {
+            "width": 5748,
+            "height": 4000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 40,
+        "fields": {
+            "width": 5464,
+            "height": 3640
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 41,
+        "fields": {
+            "width": 4000,
+            "height": 3000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 42,
+        "fields": {
+            "width": 2000,
+            "height": 1333
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 43,
+        "fields": {
+            "width": 5647,
+            "height": 3752
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 44,
+        "fields": {
+            "width": 6332,
+            "height": 4221
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 45,
+        "fields": {
+            "width": 5655,
+            "height": 3775
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 46,
+        "fields": {
+            "width": 6016,
+            "height": 4000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 47,
+        "fields": {
+            "width": 4001,
+            "height": 6000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 48,
+        "fields": {
+            "width": 4752,
+            "height": 3168
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 49,
+        "fields": {
+            "width": 2848,
+            "height": 1899
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 50,
+        "fields": {
+            "width": 3936,
+            "height": 2624
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 51,
+        "fields": {
+            "width": 2309,
+            "height": 3464
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 52,
+        "fields": {
+            "width": 5461,
+            "height": 8192
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 53,
+        "fields": {
+            "width": 4126,
+            "height": 2751
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 54,
+        "fields": {
+            "width": 5360,
+            "height": 3560
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 55,
+        "fields": {
+            "width": 4480,
+            "height": 6720
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 56,
+        "fields": {
+            "width": 4852,
+            "height": 7275
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 57,
+        "fields": {
+            "width": 5388,
+            "height": 3777
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 58,
+        "fields": {
+            "width": 5760,
+            "height": 3240
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 59,
+        "fields": {
+            "width": 5032,
+            "height": 7544
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 60,
+        "fields": {
+            "width": 3200,
+            "height": 2560
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 61,
+        "fields": {
+            "width": 7728,
+            "height": 4347
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 62,
+        "fields": {
+            "width": 4388,
+            "height": 6582
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 63,
+        "fields": {
+            "width": 5700,
+            "height": 3601
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 64,
+        "fields": {
+            "width": 3361,
+            "height": 4201
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 65,
+        "fields": {
+            "width": 2772,
+            "height": 1890
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 66,
+        "fields": {
+            "width": 3793,
+            "height": 2845
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 67,
+        "fields": {
+            "width": 2888,
+            "height": 3306
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 68,
+        "fields": {
+            "width": 5616,
+            "height": 3744
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 69,
+        "fields": {
+            "width": 3840,
+            "height": 5760
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 70,
+        "fields": {
+            "width": 6144,
+            "height": 8192
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 71,
+        "fields": {
+            "width": 2606,
+            "height": 3648
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 72,
+        "fields": {
+            "width": 6240,
+            "height": 4160
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 73,
+        "fields": {
+            "width": 3636,
+            "height": 2583
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 74,
+        "fields": {
+            "width": 3511,
+            "height": 5267
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 75,
+        "fields": {
+            "width": 4803,
+            "height": 3202
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 76,
+        "fields": {
+            "width": 2000,
+            "height": 1086
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 77,
+        "fields": {
+            "width": 3003,
+            "height": 4504
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 78,
+        "fields": {
+            "width": 4925,
+            "height": 3328
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 79,
+        "fields": {
+            "width": 3640,
+            "height": 5460
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 80,
+        "fields": {
+            "width": 4640,
+            "height": 6960
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 81,
+        "fields": {
+            "width": 2899,
+            "height": 4348
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 82,
+        "fields": {
+            "width": 4272,
+            "height": 2848
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 83,
+        "fields": {
+            "width": 1898,
+            "height": 1266
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 84,
+        "fields": {
+            "width": 2326,
+            "height": 3495
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 85,
+        "fields": {
+            "width": 2999,
+            "height": 3999
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 86,
+        "fields": {
+            "width": 4472,
+            "height": 7952
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 87,
+        "fields": {
+            "width": 2500,
+            "height": 1682
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 88,
+        "fields": {
+            "width": 4000,
+            "height": 6016
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 89,
+        "fields": {
+            "width": 1775,
+            "height": 3157
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 90,
+        "fields": {
+            "width": 4480,
+            "height": 5451
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 91,
+        "fields": {
+            "width": 4000,
+            "height": 3200
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 92,
+        "fields": {
+            "width": 5472,
+            "height": 3072
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 93,
+        "fields": {
+            "width": 5325,
+            "height": 3575
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 94,
+        "fields": {
+            "width": 5135,
+            "height": 3423
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 95,
+        "fields": {
+            "width": 5000,
+            "height": 8000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 96,
+        "fields": {
+            "width": 5472,
+            "height": 3648
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 97,
+        "fields": {
+            "width": 4000,
+            "height": 6000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 98,
+        "fields": {
+            "width": 4501,
+            "height": 3005
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 99,
+        "fields": {
+            "width": 2500,
+            "height": 1794
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 100,
+        "fields": {
+            "width": 4368,
+            "height": 2457
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 101,
+        "fields": {
+            "width": 2848,
+            "height": 3560
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 102,
+        "fields": {
+            "width": 2048,
+            "height": 1365
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 103,
+        "fields": {
+            "width": 4672,
+            "height": 7008
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 104,
+        "fields": {
+            "width": 5439,
+            "height": 3626
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 105,
+        "fields": {
+            "width": 4500,
+            "height": 8000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 106,
+        "fields": {
+            "width": 4169,
+            "height": 6332
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 107,
+        "fields": {
+            "width": 2731,
+            "height": 4097
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 108,
+        "fields": {
+            "width": 4160,
+            "height": 6240
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 109,
+        "fields": {
+            "width": 4593,
+            "height": 3062
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 110,
+        "fields": {
+            "width": 3456,
+            "height": 5184
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 111,
+        "fields": {
+            "width": 7680,
+            "height": 4320
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 112,
+        "fields": {
+            "width": 4896,
+            "height": 3264
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 113,
+        "fields": {
+            "width": 6209,
+            "height": 3665
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 114,
+        "fields": {
+            "width": 7008,
+            "height": 4672
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 115,
+        "fields": {
+            "width": 5304,
+            "height": 7952
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 116,
+        "fields": {
+            "width": 4824,
+            "height": 7232
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 117,
+        "fields": {
+            "width": 6000,
+            "height": 4000
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 118,
+        "fields": {
+            "width": 7941,
+            "height": 5297
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 119,
+        "fields": {
+            "width": 4896,
+            "height": 3010
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 120,
+        "fields": {
+            "width": 3848,
+            "height": 2565
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 121,
+        "fields": {
+            "width": 4928,
+            "height": 3280
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 122,
+        "fields": {
+            "width": 6070,
+            "height": 3414
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 123,
+        "fields": {
+            "width": 2133,
+            "height": 3200
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 124,
+        "fields": {
+            "width": 2496,
+            "height": 3624
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 125,
+        "fields": {
+            "width": 3510,
+            "height": 5260
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 126,
+        "fields": {
+            "width": 1667,
+            "height": 2500
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 127,
+        "fields": {
+            "width": 3500,
+            "height": 2333
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 128,
+        "fields": {
+            "width": 4928,
+            "height": 3264
+        }
+    },
+    {
+        "model": "adminapp.wallpaperdimension",
+        "pk": 129,
+        "fields": {
+            "width": 8000,
+            "height": 5333
+        }
+    }
+]

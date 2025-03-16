@@ -5,7 +5,7 @@ from django.core import validators
 from django.conf import settings
 from common.validators import MaxFileSizeValidator, ImageFormatAndFileExtensionsValidator
 from common.path_generators import FileUploadPathGenerator
-from common.image_utils import ImageFormat, generate_webp_from_jpeg
+from common.image_utils import ImageFormat
 from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
@@ -182,7 +182,9 @@ class Wallpaper(AbstractBaseModel):
     )
     wallpaper_group = models.ForeignKey(
         WallpaperGroup,
-        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
         related_name='wallpapers',
     )
 
@@ -200,7 +202,7 @@ class Wallpaper(AbstractBaseModel):
                 code="invalid_image_dimensions",
                 params={"width": str(self.image.width), "height": str(self.image.height)}
             )
-
+    
 
 class WallpaperDimension(AbstractBaseModel):
     
