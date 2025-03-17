@@ -22,3 +22,12 @@ def generate_and_save_dummy_wallpaper(wallpaper_id: int) -> None:
     dummy_image_file = generate_webp_from_jpeg(w.image.file)
     dummy_image_field = cast(ImageFieldFile, w.dummy_image)
     dummy_image_field.save(wallpaper_dummy_upload_path_generator(w, 'dummy.webp'), dummy_image_file, save=True)
+
+
+def bulk_upload(path_to_zipfile: Path) -> None:
+    # unzip to tempdir
+    # create a "progress" data structure to redis or django cache: Some kind of data store that temporarely allows read-write access in thread safe manner so that multiple celery task process can update the task progress 
+    # loop files in tempdir and run task for each file: we need to store data about which files are done to make tasks idempotent
+        # the task will update the progress datastructure and we can poll that in other function
+        # the task will also report the file-names with error message which are faild to compress
+    pass

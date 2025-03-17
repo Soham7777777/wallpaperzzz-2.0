@@ -49,10 +49,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-FIXTURE_DIRS = [
-    BASE_DIR / 'fixtures',
-]
-
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 
 ROOT_URLCONF = 'project.urls'
