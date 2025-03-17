@@ -4,23 +4,23 @@ from django.db import models
 from django.core import validators
 from django.conf import settings
 from common.validators import MaxFileSizeValidator, ImageFormatAndFileExtensionsValidator
-from common.path_generators import FileUploadPathGenerator
+from common.unique_file_path_generators import UniqueFilePathGenerator
 from common.image_utils import ImageFormat
 from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
-from adminapp.fields import WallpaperDimensionField
+from app.fields import WallpaperDimensionField
 from django.db.models.fields.files import ImageFieldFile
 from django.core.exceptions import ValidationError
 from django_stubs_ext.db.models.manager import RelatedManager
-from wallpaperzzz.settings import kb
+from project.settings import kb
 
 
-category_thumbnail_upload_path_generator = FileUploadPathGenerator(PurePath('category_thumbnails'), 'thumbnail')
+category_thumbnail_upload_path_generator = UniqueFilePathGenerator(PurePath('category_thumbnails'), 'thumbnail')
 
-wallpaper_image_upload_path_generator = FileUploadPathGenerator(PurePath('wallpapers'), 'wallpaper')
+wallpaper_image_upload_path_generator = UniqueFilePathGenerator(PurePath('wallpapers'), 'wallpaper')
 
-wallpaper_dummy_upload_path_generator = FileUploadPathGenerator(PurePath('wallpapers'), 'dummy')
+wallpaper_dummy_upload_path_generator = UniqueFilePathGenerator(PurePath('wallpapers'), 'dummy')
 
 
 def validate_image_max_file_size(value: ImageFieldFile) -> None:

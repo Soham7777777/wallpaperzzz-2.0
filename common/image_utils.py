@@ -73,17 +73,18 @@ def get_image_format_for_file_extension(file_extension: str) -> ImageFormat:
         raise ValueError(f"File extension {file_extension} is not recognized.")
 
 
-_webp_params = dict(
-    quality=20,
-    alpha_quality=0,
-    method=6
-)
-
-
 def generate_webp_from_jpeg(image_file: ImageFile) -> ImageFile:
     in_memory_file = io.BytesIO()
     with Image.open(image_file) as img:
         if img.format != ImageFormat.JPEG:
             raise ValueError("The image must be in JPEG format.")
-        img.save(in_memory_file, format=ImageFormat.WEBP, **_webp_params)
+        img.save(
+            in_memory_file,
+            format=ImageFormat.WEBP,
+
+            # webp compression params
+            quality=20,
+            alpha_quality=0,
+            method=6,
+        )
     return ImageFile(in_memory_file)

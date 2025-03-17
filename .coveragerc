@@ -17,9 +17,9 @@ exclude_also =
 source =
     adminapp
     common
-    wallpaperzzz
+    project
 
 omit =
-    wallpaperzzz/wsgi.py
+    project/wsgi.py
     */migrations/*
     __init__.py

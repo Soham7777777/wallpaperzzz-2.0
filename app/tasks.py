@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import cast
 from celery import shared_task
 from django.core.files.images import ImageFile
-from adminapp.models import Wallpaper, wallpaper_dummy_upload_path_generator
+from app.models import Wallpaper, wallpaper_dummy_upload_path_generator
 from django.conf import settings
 from common.image_utils import generate_webp_from_jpeg
 from django.db.models.fields.files import ImageFieldFile

@@ -9,7 +9,7 @@ from django.db import models
 
 @deconstructible
 @dataclass
-class FileUploadPathGenerator:
+class UniqueFilePathGenerator:
 
     base_path: PurePath
     name_prefix: str
@@ -24,7 +24,7 @@ class FileUploadPathGenerator:
         if not set(self.name_prefix).issubset(string.ascii_letters):
             raise ValueError(f"The name_prefix ({self.name_prefix}) can only contain ascii letters.")
 
-        min_size, max_size = FileUploadPathGenerator._name_prefix_range
+        min_size, max_size = UniqueFilePathGenerator._name_prefix_range
         if len(self.name_prefix) > max_size or len(self.name_prefix) < min_size:
             raise ValueError(f"The name_prefix ({self.name_prefix}) must be within {min_size} to {max_size} characters.")
 

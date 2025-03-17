@@ -8,7 +8,7 @@ import django_stubs_ext
 def main() -> None:
     """Run administrative tasks."""
     django_stubs_ext.monkeypatch()
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wallpaperzzz.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

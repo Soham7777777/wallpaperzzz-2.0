@@ -1,9 +1,24 @@
-import preshell
+import os
+import django
+import django_stubs_ext
+
+
+django_stubs_ext.monkeypatch()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+django.setup()
+
+# ================================================================
+# ================================================================
+# ================================================================
+# ================================================================
+# ================================================================
+
+
 from django.db import connection
 from django.conf import settings
-from adminapp.tasks import save_wallpaper, generate_and_save_dummy_wallpaper
+from app.tasks import save_wallpaper, generate_and_save_dummy_wallpaper
 from pathlib import Path
-from adminapp.models import Category, SettingsStore, Wallpaper, WallpaperGroup, WallpaperDimension
+from app.models import Category, SettingsStore, Wallpaper, WallpaperGroup, WallpaperDimension
 from django.core.files.images import ImageFile
 from common.image_utils import ImageFormat
 from PIL import Image
