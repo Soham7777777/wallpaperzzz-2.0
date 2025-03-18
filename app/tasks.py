@@ -1,22 +1,25 @@
-from pathlib import Path
 from typing import cast
-from celery import shared_task
+from celery import chain, shared_task, group
+from celery.result import GroupResult
 from django.core.files.images import ImageFile
 from app.models import Wallpaper, wallpaper_dummy_upload_path_generator
-from django.conf import settings
 from common.image_utils import generate_webp_from_jpeg
 from django.db.models.fields.files import ImageFieldFile
+from zipfile import Path as ZipPath, ZipFile
 
 
-@shared_task
-def save_wallpaper(raw_path: str) -> int:
-    w = Wallpaper(image=ImageFile(Path(raw_path).relative_to(settings.BASE_DIR).open('rb')))
+
+# the patching idea was to provide zip file path and image file path in argument and work for now no storage no task persistance
+
+@shared_task(bind=True, acks_late=False)
+def save_wallpaper(self, image_path: str, zip_file_path: str) -> int: # type: ignore
+    w = Wallpaper(image=ImageFile(ZipPath(raw_path).open('rb')))
     w.full_clean(exclude=('dimension', ))
     w.save()
     return w.id
 
 
-@shared_task(ignore_result=True)
+@shared_task(ignore_result=True, acks_late=False)
 def generate_and_save_dummy_wallpaper(wallpaper_id: int) -> None:
     w = Wallpaper.objects.get(pk=wallpaper_id)
     dummy_image_file = generate_webp_from_jpeg(w.image.file)
@@ -24,10 +27,12 @@ def generate_and_save_dummy_wallpaper(wallpaper_id: int) -> None:
     dummy_image_field.save(wallpaper_dummy_upload_path_generator(w, 'dummy.webp'), dummy_image_file, save=True)
 
 
-def bulk_upload(path_to_zipfile: Path) -> None:
-    # unzip to tempdir
-    # create a "progress" data structure to redis or django cache: Some kind of data store that temporarely allows read-write access in thread safe manner so that multiple celery task process can update the task progress 
-    # loop files in tempdir and run task for each file: we need to store data about which files are done to make tasks idempotent
-        # the task will update the progress datastructure and we can poll that in other function
-        # the task will also report the file-names with error message which are faild to compress
-    pass
+def bulk_upload(zip_file_path: str) -> str:
+    with ZipFile(zip_file_path, 'r') as zip_file:
+        group_result = cast(GroupResult, group(
+            chain(save_wallpaper.s(file.relative_to(zip_file), zip_file_path), generate_and_save_dummy_wallpaper.s()) 
+                for file in ZipPath(zip_file).glob('**/*.jpg')
+        ).delay())
+        group_result.save() # type: ignore[attr-defined]
+        result_id = cast(str, group_result.id) # type: ignore[attr-defined]
+        return result_id

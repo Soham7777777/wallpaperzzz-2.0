@@ -57,31 +57,27 @@ from celery.result import AsyncResult, GroupResult
 # category1.save()
 # wd.save()
 
-p = settings.BASE_DIR / 'wallpapers'
-group_result = group(
-    chain(save_wallpaper.s(str(x)), generate_and_save_dummy_wallpaper.s())
-        for x in p.glob('*')
-).delay()
-gid = group_result.save()
-print(gid)
-print(GroupResult.restore(gid))
+# p = settings.BASE_DIR / 'wallpapers'
+# group_result = cast(GroupResult, group(
+#     chain(save_wallpaper.s(str(x)), generate_and_save_dummy_wallpaper.s())
+#         for x in p.glob('*')
+# ).delay())
+# group_result.save()
+# print(group_result.id)
+# print(GroupResult.restore(group_result.id))
 
-# # approach 2
-# group(save_wallpaper.s(str(x)) for x in p.glob('*'))().get(propagate=False)
+# import zipfile
 
-# # Define the raw query
-# query = "SELECT id FROM adminapp_wallpaper WHERE dummy_image = ''"
+# wallpaper_zip_path = settings.MEDIA_ROOT / 'wallpapers.zip'
 
-# # Execute the raw query using the connection object
-# with connection.cursor() as cursor:
-#     cursor.execute(query)
-#     result = cursor.fetchall()
+# # with zipfile.ZipFile(wallpaper_zip_path, 'r') as zip_file:
+# zip_file = zipfile.ZipFile(wallpaper_zip_path, 'r')
 
-# # Convert the result to an iterable of integers
-# int_ids = [row[0] for row in result]
-# print(len(int_ids))
+# from app.tasks import bulk_upload
+# p = str(settings.MEDIA_ROOT / 'wallpapers.zip')
+# print(bulk_upload(p))
 
-# group(generate_and_save_dummy_wallpaper.s(wallpaper_id) for wallpaper_id in int_ids)()
+
 
 y = 1
 y = 'str'

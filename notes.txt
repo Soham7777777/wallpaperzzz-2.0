@@ -9,3 +9,29 @@
     - Wallpaper.dummy_image cannot be default to null in database, it defaults to empty string; this prevents having nullable column while having unique constrain on database level. The sqlite supports multiple null values for unique constrained column but Django ORM for FileField does not, thus its Bug.
 
 - Making both shared tasks idempoetent
+    - The other option is to disable acks_late which will acknowledge task (and thus dequeue task from redis) just before executing it. In the event of worker failuer or any mishap, the task will not be reperformed because its already dequeued from redis before even started. If the task is configured with retry - that too will fail to retry if the worker (for some reason) crashes mid-execution.
+        - The summary is if the task is not idempoetent then disable acks_late to prevent unknonw/unhandled/unconfigured retries of task in the event of worker failuer, this is need since application would contain duplicate/inconsistent state if non-idempotent task runs more than one time with same arguemnt.
+
+    - To make the task idempoetent, we can cache the arguemnts of the task and if its called with "seen" arguemnts then we can reject/revoke/ignore the task execution which would make it idempoetent - Even if called multiple times the application state will be consistent.
+        - To achieve this we can configure redis/memcached to store arguments of a task request in a "set" datastructure.
+        - And now we have to manage the initialization, destruction and providing read-write access to executing task via providing id for that redis datastructure in task arguemnt  
+
+
+- Creating new table for storing task related information like group_id, uploaded zip file path etc...
+
+- Final words before closing the project for a long time:
+    - WE NEED SOME STORAGE SYSTEM THAT CAN STORE DATA FOR CURRENT BULK UPLOAD REQUEST WHICH MAYBE ACCESSED CONCURRENTLY
+    - Few ideas:
+        - Use django cache and store list of serialized pydantic models to a hardcoded key (because there is no way to get all keys in django)
+        - Use a database table to store bulk-upload request history and its related data but the problem here is that I don't want to store history permenently
+        - Use a custom redis based datastructure to store request history
+        - Use some kind of hack like storing it in Task instance: but its a global instance and shared with all existing tasks what I need to store for is just data related to one bulk upload request
+    
+    - If think more harder, it boil downs to the below piece of text:
+        - The user starts an asyncronous task that will take time
+        - The user will close the connection with server but we want our task to still do the job and progress
+        - The user comes back and asks for task to server thus server must have stored progress of task (here just one uuid) somewhere which can be a database, a cache or a file!
+
+        - The task itself also needs shared (shared between other task that are part of a perticular bulk-upload request) datastructures for its algorithm - The `save_wallpaper` task related to a perticular bulk upload request needs to store "seen_paths" in order to become truly idempotent
+        - For this we should not use database - but custom redis store suites more!
+    
