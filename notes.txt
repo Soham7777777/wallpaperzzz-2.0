@@ -35,3 +35,9 @@
         - The task itself also needs shared (shared between other task that are part of a perticular bulk-upload request) datastructures for its algorithm - The `save_wallpaper` task related to a perticular bulk upload request needs to store "seen_paths" in order to become truly idempotent
         - For this we should not use database - but custom redis store suites more!
     
+- Want a code review for celery tasks from an expert and discussing above concerns
+
+
+- Creating saperate table for files with its information like path, user extension etc..
+
+- `on_success` or `on_failuer` update the terminated task belonging to its group by using custom request class

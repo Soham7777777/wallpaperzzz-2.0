@@ -28,6 +28,10 @@ from celery import group, chain
 from celery.result import AsyncResult, GroupResult
 
 
+y = 1
+y = 'str'
+
+
 # p = Path('category.jpg')
 # category1 = Category(name="first category", description="some day", thumbnail=ImageFile(Path('category.jpg').open("rb")))
 # category2 = Category(name='second_category', description="other day", thumbnail=ImageFile(Path('./wallpapers/pexels-137666-710743.jpg').open("rb")))
@@ -70,14 +74,15 @@ from celery.result import AsyncResult, GroupResult
 
 # wallpaper_zip_path = settings.MEDIA_ROOT / 'wallpapers.zip'
 
-# # with zipfile.ZipFile(wallpaper_zip_path, 'r') as zip_file:
+# with zipfile.ZipFile(wallpaper_zip_path, 'r') as zip_file:
 # zip_file = zipfile.ZipFile(wallpaper_zip_path, 'r')
 
-# from app.tasks import bulk_upload
-# p = str(settings.MEDIA_ROOT / 'wallpapers.zip')
-# print(bulk_upload(p))
+from app.tasks import bulk_upload
+print(bulk_upload(settings.MEDIA_ROOT / 'wallpapers.zip'))
 
 
-
-y = 1
-y = 'str'
+from app.tasks import calculate_status_percentage
+group_result_id = input("Enter process id: ")
+while True:
+    print(calculate_status_percentage(group_result_id))
+    time.sleep(.5)

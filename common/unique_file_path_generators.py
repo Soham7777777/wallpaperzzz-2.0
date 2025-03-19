@@ -31,5 +31,5 @@ class UniqueFilePathGenerator:
 
     def __call__(self, instance: models.Model, filename_from_user: str) -> str:
         ext = PurePath(filename_from_user).suffix
-        new_filename = f"{self.name_prefix}-{uuid.uuid4().hex}{uuid.uuid4().hex}{ext}"
+        new_filename = f"{self.name_prefix}-{uuid.uuid4().hex}{ext}"
         return str(self.base_path / new_filename)

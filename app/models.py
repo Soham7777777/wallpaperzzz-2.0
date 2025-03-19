@@ -1,5 +1,6 @@
 from pathlib import PurePath
 from typing import cast
+import uuid
 from django.db import models
 from django.core import validators
 from django.conf import settings
@@ -14,6 +15,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.core.exceptions import ValidationError
 from django_stubs_ext.db.models.manager import RelatedManager
 from project.settings import kb
+from celery.result import GroupResult
 
 
 category_thumbnail_upload_path_generator = UniqueFilePathGenerator(PurePath('category_thumbnails'), 'thumbnail')
@@ -28,6 +30,15 @@ def validate_image_max_file_size(value: ImageFieldFile) -> None:
     MaxFileSizeValidator(upper_limit)(value)
 
 
+def validate_group_process_exists(value: uuid.UUID) -> None:
+    if GroupResult.restore(str(value)) is None: # type: ignore[attr-defined]
+        raise ValidationError(
+            "The group process %(process_uuid)s does not exists.",
+            code='group_process_does_not_exists',
+            params={'process_uuid': str(value)}
+        )
+
+
 class _SettingsManager(models.Manager["SettingsStore"]):
 
     def fetch_settings(self) -> "SettingsStore":
@@ -40,6 +51,8 @@ class _SettingsManager(models.Manager["SettingsStore"]):
 
 class SettingsStore(AbstractBaseModel):
     
+    uuid = None # type: ignore[assignment]
+
     key = models.CharField(
         primary_key=True,
         max_length=64,
@@ -233,3 +246,24 @@ class WallpaperTag(AbstractBaseModel):
     wallpaper_groups: RelatedManager[WallpaperGroup]
 
     objects: models.Manager["WallpaperTag"] = models.Manager()
+
+
+class BulkUploadProcess(AbstractBaseModel):
+
+    uuid = models.UUIDField(
+        primary_key=True,
+        validators=[
+            validate_group_process_exists,
+        ]
+    )
+    total_tasks = models.PositiveIntegerField()
+    terminated_tasks = models.PositiveIntegerField(default=0)
+
+
+    def clean(self) -> None:
+        if self.terminated_tasks > self.total_tasks:
+            raise ValidationError(
+                'terminated_tasks are %(terminated_tasks)s but total_tasks are %(total_tasks)s.',
+                code='invalid_terminated_tasks',
+                params={'terminated_tasks': str(self.terminated_tasks), 'total_tasks': str(self.total_tasks)}
+            )
