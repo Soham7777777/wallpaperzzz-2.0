@@ -50,7 +50,7 @@ class ImageFormatAndFileExtensionsValidator:
             raise ValidationError(
                 "Ensure the image file is in a supported format such as %(formats)s.",
                 code='invalid_image_file_format',
-                params={'formats': tuple([*ImageFormat])}
+                params={'formats': str(tuple([str(format) for format in self.image_formats]))}
             )
 
         extensions = get_file_extensions_for_image_format(ImageFormat[image_format])

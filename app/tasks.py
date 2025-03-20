@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import cast
+import uuid
 from celery import chain, shared_task, group
 from celery.result import GroupResult
 from django.core.files.images import ImageFile
@@ -12,17 +13,18 @@ from celery.exceptions import Reject
 
 terminal_status = ('SUCCESS', 'FAILURE')
 
+
 @shared_task(acks_late=False)
-def save_wallpaper(image_path: str, zip_file_path: str) -> int: # type: ignore
+def save_wallpaper(image_path: str, zip_file_path: str) -> str:
     w = Wallpaper(image=ImageFile(ZipPath(zip_file_path, at=image_path).open('rb')))
     w.full_clean(exclude=('dimension', ))
     w.save()
-    return w.id
+    return w.uuid.hex
 
 
 @shared_task(acks_late=False)
-def generate_and_save_dummy_wallpaper(wallpaper_id: int) -> None:
-    w = Wallpaper.objects.get(pk=wallpaper_id)
+def generate_and_save_dummy_wallpaper(wallpaper_id: str) -> None:
+    w = Wallpaper.objects.get(pk=uuid.UUID(wallpaper_id))
 
     if w.dummy_image != '':
         raise Reject("Dummy already exists", requeue=False)
@@ -43,7 +45,9 @@ def bulk_upload(zip_file_path: Path) -> str:
 
 
 def calculate_status_percentage(result_id: str) -> int:
-    group_result = cast(GroupResult, GroupResult.restore(result_id)) # type: ignore[attr-defined]
+    group_result = cast(GroupResult | None, GroupResult.restore(result_id)) # type: ignore[attr-defined]
+    if group_result is None:
+        raise ValueError(f'The group process for id {result_id} does not exists.')
     total_results = len(group_result) * 2 # type: ignore[arg-type]
     ready_results = 0
 
@@ -51,4 +55,5 @@ def calculate_status_percentage(result_id: str) -> int:
         if result.status in terminal_status: ready_results += 1
         if result.parent.status in terminal_status: ready_results += 1
 
+    print(ready_results, total_results)
     return (ready_results * 100)//total_results

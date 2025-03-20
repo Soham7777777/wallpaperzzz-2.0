@@ -78,7 +78,7 @@ y = 'str'
 # zip_file = zipfile.ZipFile(wallpaper_zip_path, 'r')
 
 from app.tasks import bulk_upload
-print(bulk_upload(settings.MEDIA_ROOT / 'wallpapers.zip'))
+print(bulk_upload(settings.BASE_DIR / 'temp/wallpapers.zip'))
 
 
 from app.tasks import calculate_status_percentage

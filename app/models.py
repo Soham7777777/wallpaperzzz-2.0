@@ -213,9 +213,9 @@ class Wallpaper(AbstractBaseModel):
             raise ValidationError(
                 "Ensure the image dimensions match one of the allowed values, The current dimension: %(width)s x %(height)s is not supported.",
                 code="invalid_image_dimensions",
-                params={"wiqdth": str(self.image.width), "height": str(self.image.height)}
+                params={"width": str(self.image.width), "height": str(self.image.height)}
             )
-    
+
 
 class WallpaperDimension(AbstractBaseModel):
     
