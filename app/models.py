@@ -6,7 +6,7 @@ from django.core import validators
 from django.conf import settings
 from common.validators import MaxFileSizeValidator, ImageFormatAndFileExtensionsValidator
 from common.unique_file_path_generators import UniqueFilePathGenerator
-from common.image_utils import ImageFormat
+from common.image_utils import ImageFormat, get_file_extensions_for_image_format
 from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
@@ -55,6 +55,12 @@ class _SettingsManager(models.Manager["SettingsStore"]):
 class _BulkUploadManager(models.Manager["BulkUploadProcess"]):
 
     def bulk_upload(self, zip_file_path: ZipPath) -> "BulkUploadProcess":
+        paths = []
+        extensions = get_file_extensions_for_image_format(ImageFormat.JPEG)
+        glob_patterns = tuple([f'**/*{extension}' for extension in extensions])
+
+        for glob_pattern in glob_patterns: paths += [*zip_file_path.glob(glob_pattern)]
+        
         group_result = cast(GroupResult, group(
                 chain(
 
@@ -63,7 +69,7 @@ class _BulkUploadManager(models.Manager["BulkUploadProcess"]):
                     generate_and_save_dummy_wallpaper.s(),
 
                 ) 
-                for file in zip_file_path.glob('**/*.jpg')
+                for file in paths
             )(countdown=10)
         )
         group_result.save() # type: ignore[attr-defined]
