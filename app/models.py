@@ -16,6 +16,9 @@ from django.core.exceptions import ValidationError
 from django_stubs_ext.db.models.manager import RelatedManager
 from project.settings import kb
 from celery.result import GroupResult
+from zipfile import Path as ZipPath
+from celery import group, chain
+from app.tasks import save_wallpaper, generate_and_save_dummy_wallpaper
 
 
 category_thumbnail_upload_path_generator = UniqueFilePathGenerator(PurePath('category_thumbnails'), 'thumbnail')
@@ -47,6 +50,25 @@ class _SettingsManager(models.Manager["SettingsStore"]):
 
     def fetch_maximum_image_file_size_in_kb(self) -> int:
         return self.fetch_settings().maximum_image_file_size * 1024
+
+
+class _BulkUploadManager(models.Manager["BulkUploadProcess"]):
+
+    def bulk_upload(self, zip_file_path: ZipPath) -> "BulkUploadProcess":
+        group_result = cast(GroupResult, group(
+                chain(
+
+                    save_wallpaper.s(file.at, str(file.root.filename)),
+                    
+                    generate_and_save_dummy_wallpaper.s(),
+
+                ) 
+                for file in zip_file_path.glob('**/*.jpg')
+            )(countdown=10)
+        )
+        group_result.save() # type: ignore[attr-defined]
+        result_id = cast(str, group_result.id) # type: ignore[attr-defined]
+        return BulkUploadProcess.objects.create(uuid=uuid.UUID(result_id))
 
 
 class SettingsStore(AbstractBaseModel):
@@ -250,20 +272,54 @@ class WallpaperTag(AbstractBaseModel):
 
 class BulkUploadProcess(AbstractBaseModel):
 
+    terminal_status = ('SUCCESS', 'FAILURE')
     uuid = models.UUIDField(
         primary_key=True,
         validators=[
             validate_group_process_exists,
         ]
     )
-    total_tasks = models.PositiveIntegerField()
-    terminated_tasks = models.PositiveIntegerField(default=0)
+    started_at = models.DateTimeField(auto_now=True)
+    errors: RelatedManager["BulkUploadProcessError"]
+
+    objects: models.Manager["BulkUploadProcess"] = models.Manager()
+    upload_procedures: _BulkUploadManager = _BulkUploadManager()
 
 
-    def clean(self) -> None:
-        if self.terminated_tasks > self.total_tasks:
-            raise ValidationError(
-                'terminated_tasks are %(terminated_tasks)s but total_tasks are %(total_tasks)s.',
-                code='invalid_terminated_tasks',
-                params={'terminated_tasks': str(self.terminated_tasks), 'total_tasks': str(self.total_tasks)}
-            )
+    def calculate_progress(self) -> tuple[int, int]:
+        group_result = cast(GroupResult | None, GroupResult.restore(str(self.uuid))) # type: ignore[attr-defined]
+
+        if group_result is None:
+            raise ValueError(f'The group process for id {str(self.uuid)} cannot be found.')
+
+        total_results = len(group_result) * 2 # type: ignore[arg-type]
+        ready_results = 0
+
+        for result in group_result: # type: ignore[attr-defined]
+            if result.status in BulkUploadProcess.terminal_status: ready_results += 1
+            if result.parent.status in BulkUploadProcess.terminal_status: ready_results += 1
+
+        return (ready_results, total_results)
+
+
+class BulkUploadProcessError(AbstractBaseModel):
+
+    process = models.ForeignKey(
+        BulkUploadProcess,
+        on_delete=models.CASCADE,
+        related_name='errors',
+    )
+    validation_error = models.CharField(
+        max_length=64,
+        validators=[
+            validators.MinLengthValidator(2),
+        ]
+    )
+    at_file = models.CharField(
+        max_length=1024,
+        validators=[
+            validators.MinLengthValidator(1),
+        ]
+    )
+
+    objects: models.Manager["BulkUploadProcessError"] = models.Manager()

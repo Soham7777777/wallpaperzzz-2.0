@@ -41,3 +41,7 @@
 - Creating saperate table for files with its information like path, user extension etc..
 
 - `on_success` or `on_failuer` update the terminated task belonging to its group by using custom request class
+
+- Only generate dummy if wallpaper size is more than 500 kb.
+
+- need to consult expert for code review and best practiceses with celery

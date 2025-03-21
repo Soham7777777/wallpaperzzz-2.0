@@ -77,12 +77,10 @@ y = 'str'
 # with zipfile.ZipFile(wallpaper_zip_path, 'r') as zip_file:
 # zip_file = zipfile.ZipFile(wallpaper_zip_path, 'r')
 
-from app.tasks import bulk_upload
-print(bulk_upload(settings.BASE_DIR / 'temp/wallpapers.zip'))
+from app.models import BulkUploadProcess
+import zipfile
+process = BulkUploadProcess.upload_procedures.bulk_upload(zipfile.Path(settings.BASE_DIR / 'temp/wallpapers.zip'))
 
-
-from app.tasks import calculate_status_percentage
-group_result_id = input("Enter process id: ")
 while True:
-    print(calculate_status_percentage(group_result_id))
-    time.sleep(.5)
+    print(process.calculate_progress())
+    time.sleep(1)
