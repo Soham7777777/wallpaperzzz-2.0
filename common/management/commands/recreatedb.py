@@ -8,12 +8,13 @@ from django.apps import apps
 from common.management.commands._command_runners import run_manage_py
 
 DB_FILE = str(settings.DATABASES["default"]["NAME"])
-APPS = [app for app in settings.INSTALLED_APPS if app.find(".") == -1 and app.endswith("app")]
+# APPS = [app for app in settings.INSTALLED_APPS if app.find(".") == -1 and app.endswith("app")]
+APPS = ['app', ]
 MEDIA_ROOT = PurePath(settings.MEDIA_ROOT)
 
 
 class Command(BaseCommand):
-    help = "Remove pycache dirs, delete database, clean migrations, remigrate, delete media root and again remove pycache dirs. This command is only useful if sqlite database is used at local filesystem. The migrations are deleted for apps that are in cwd and name ends with 'app'."
+    help = "Remove pycache dirs, delete database, clean migrations, remigrate, delete media root and again remove pycache dirs. This command is only useful if sqlite database is used at local filesystem. The migrations are deleted for app with name 'app'."
 
 
     def remove_pycache_dirs(self, directory: str = ".") -> None:
