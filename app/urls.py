@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 def view_function(request: HttpRequest) -> HttpResponse:
-    return render(request, 'base.html')
+    return render(request, 'app/index.html')
 
 
 urlpatterns = [

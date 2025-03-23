@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+{% include "navigation.html" %}
+
+
+<main id="main" class="main">
+    <div class="pagetitle mb-4">
+        <h1>{% block pagetitle %}{% block title %}{% endblock title %}{% endblock pagetitle %}</h1>
+    </div>
+
+    {% block pagebody %}{% endblock pagebody %}
+
+</main>
+
+
+{% endblock body %}
