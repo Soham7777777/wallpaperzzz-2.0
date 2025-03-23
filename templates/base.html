@@ -1,10 +1,17 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>{% block title %}{% endblock title %}</title>
+
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/static/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
     <link rel="shortcut icon" href="/static/favicon.ico" />
@@ -12,9 +19,38 @@
     <meta name="apple-mobile-web-app-title" content="Wallpaperz" />
     <link rel="manifest" href="/static/site.webmanifest" />
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ STATIC_PREFIX }}assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_PREFIX }}assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ STATIC_PREFIX }}assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="{{ STATIC_PREFIX }}assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ STATIC_PREFIX }}assets/css/style.css" rel="stylesheet">
+
+    {% block head %}{% endblock head %}
 
 </head>
+
 <body>
-    <h1>Hello, World!</h1>
+
+  {% block body %}{% endblock body %}
+
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ STATIC_PREFIX }}assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  {% block jsfiles %}{% endblock jsfiles %}
+
+  <!-- Template Main JS File -->
+  <script src="{{ STATIC_PREFIX }}assets/js/main.js"></script>
+  {% block tail %}{% endblock tail %}
+
 </body>
+
 </html>
