@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pathlib import PurePath
 from typing import cast
 import uuid
@@ -40,6 +41,15 @@ def validate_group_process_exists(value: uuid.UUID) -> None:
             code='group_process_does_not_exists',
             params={'process_uuid': str(value)}
         )
+
+
+@dataclass
+class Progress:
+    finished_tasks: int
+    total_tasks: int
+
+    def calculate_percentage(self) -> int:
+        return (self.finished_tasks * 100) // self.total_tasks
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
@@ -292,7 +302,7 @@ class BulkUploadProcess(AbstractBaseModel):
     upload_procedures: _BulkUploadManager = _BulkUploadManager()
 
 
-    def calculate_progress(self) -> tuple[int, int]:
+    def calculate_progress(self) -> Progress:
         group_result = cast(GroupResult | None, GroupResult.restore(str(self.uuid))) # type: ignore[attr-defined]
 
         if group_result is None:
@@ -305,7 +315,7 @@ class BulkUploadProcess(AbstractBaseModel):
             if result.status in BulkUploadProcess.terminal_status: ready_results += 1
             if result.parent.status in BulkUploadProcess.terminal_status: ready_results += 1
 
-        return (ready_results, total_results)
+        return Progress(ready_results, total_results)
 
 
 class BulkUploadProcessError(AbstractBaseModel):

@@ -1,0 +1,29 @@
+{% load widget_tweaks %}
+
+
+{{ form.non_field_errors }}
+
+<div class="mb-3">
+
+    {% comment %} 
+        zip_file Field Start --------------------------
+    {% endcomment %}
+
+    <label for="{{ form.zip_file.id_for_label }}" class="form-label">{{ form.zip_file.label }}:</label>
+    {{ form.zip_file|add_class:"form-control"|attr:"accept:.zip" }}
+
+    {% if not form.zip_file.errors %}
+        <div id="{{ form.zip_file.auto_id }}_helptext" class="form-text">
+            {{ form.zip_file.help_text }}
+        </div>
+    {% else %}
+        <div id="{{ form.zip_file.auto_id }}_helptext" class="form-text text-danger">
+            {{ form.zip_file.errors }}
+        </div>
+    {% endif %}
+
+    {% comment %} 
+        zip_file Field End --------------------------
+    {% endcomment %}
+
+</div>

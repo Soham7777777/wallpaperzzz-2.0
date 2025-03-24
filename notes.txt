@@ -46,3 +46,7 @@
 - Only generate dummy if wallpaper size is more than 500 kb.
 
 - need to consult expert for code review and best practiceses with celery
+
+- searching for validating zip file and uploading larg file with progress on web
+
+- maybe XSS is possible with files names uploaded by user when showing filenames of invalid wallpapers

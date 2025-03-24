@@ -1,12 +1,9 @@
 from django.urls import path
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-
-
-def view_function(request: HttpRequest) -> HttpResponse:
-    return render(request, 'app/index.html')
+from app.views import bulk_upload
 
 
 urlpatterns = [
-    path('', view_function)
+
+    path('bulk_upload', bulk_upload),
+
 ]

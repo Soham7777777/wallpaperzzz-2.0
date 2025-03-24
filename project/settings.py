@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'common',
     'app',
 ]
@@ -139,6 +140,8 @@ MEDIA_ROOT = BASE_DIR / 'uploads/'
 MEDIA_URL = '/media/'
 
 MAX_FILE_SIZE = 5 * mb
+
+MAX_BULK_UPLOAD_SIZE = 500 * mb
 
 
 # Distributed Task Queue

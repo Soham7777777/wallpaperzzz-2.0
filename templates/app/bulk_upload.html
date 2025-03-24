@@ -1,0 +1,15 @@
+{% extends "app/base.html" %}
+
+
+{% block title %} Bulk Upload {% endblock title %}
+
+
+{% block pagebody %}
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include "app/forms/bulk_upload_form.html" %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock pagebody %}
