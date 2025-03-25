@@ -1,9 +1,11 @@
 from django.urls import path
-from app.views import bulk_upload
+from app import views
 
 
 urlpatterns = [
 
-    path('bulk_upload', bulk_upload),
+    path('', views.index),
+    path('bulk-upload', views.bulk_upload, name='bulk_upload'),
+    path('progress', views.progress, name='progress'),
 
 ]

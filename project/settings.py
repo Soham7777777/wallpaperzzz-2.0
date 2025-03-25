@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+import django
+
 kb = 1024
 mb = 1024 * kb
 
@@ -59,6 +61,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'templates',
+            django.__path__[0] + "/forms/templates",
         ],
         'APP_DIRS': False,
         'OPTIONS': {
@@ -157,3 +160,8 @@ CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TRACK_STARTED = True
 
 CELERY_WORKER_POOL_RESTARTS = True
+
+
+# Forms
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

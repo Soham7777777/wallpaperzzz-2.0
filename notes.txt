@@ -50,3 +50,9 @@
 - searching for validating zip file and uploading larg file with progress on web
 
 - maybe XSS is possible with files names uploaded by user when showing filenames of invalid wallpapers
+
+- The current validation of zip file is vulnerable to zip file attacks like zip bombs
+
+- Instead of groups of chains with two tasks, we can make two groups of tasks, the first group first saves the wallpapers, saving of wallpapers can also be sync task. With this approach, we can use signals to write progress directly to database, each time we write progress we can check if its 100% then we can start cleanup process. Just like clean up process, the startup process can also be written by checking if its 0%.
+
+- Remaining to add cancleation features to the task

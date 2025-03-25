@@ -16,7 +16,7 @@ class MaxFileSizeValidator:
 
     max_file_size: int
 
-    _max_file_size_range: ClassVar[tuple[Literal[1], Literal[100_00000]]] = 1, 100_00000
+    _max_file_size_range: ClassVar[tuple[Literal[1], Literal[700_000000]]] = 1, 700_000000
 
 
     def __post_init__(self) -> None:

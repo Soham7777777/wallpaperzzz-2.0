@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import PurePath
 from typing import cast
 import uuid
+import zipfile
 from django.db import models
 from django.core import validators
 from django.conf import settings
@@ -12,7 +13,7 @@ from common.regexes import name_regex_validator, key_regex_validator
 from common.signals import SignalEffect
 from common.models import AbstractBaseModel
 from app.fields import WallpaperDimensionField
-from django.db.models.fields.files import ImageFieldFile
+from django.db.models.fields.files import ImageFieldFile, FieldFile
 from django.core.exceptions import ValidationError
 from django_stubs_ext.db.models.manager import RelatedManager
 from project.settings import kb
@@ -20,6 +21,7 @@ from celery.result import GroupResult
 from zipfile import Path as ZipPath
 from celery import group, chain
 from app.tasks import save_wallpaper, generate_and_save_dummy_wallpaper
+from project.settings import mb
 
 
 category_thumbnail_upload_path_generator = UniqueFilePathGenerator(PurePath('category_thumbnails'), 'thumbnail')
@@ -27,6 +29,8 @@ category_thumbnail_upload_path_generator = UniqueFilePathGenerator(PurePath('cat
 wallpaper_image_upload_path_generator = UniqueFilePathGenerator(PurePath('wallpapers'), 'wallpaper')
 
 wallpaper_dummy_upload_path_generator = UniqueFilePathGenerator(PurePath('wallpapers'), 'dummy')
+
+zip_file_store_upload_path_generator = UniqueFilePathGenerator(PurePath('zip_files'), 'zip')
 
 
 def validate_image_max_file_size(value: ImageFieldFile) -> None:
@@ -49,7 +53,10 @@ class Progress:
     total_tasks: int
 
     def calculate_percentage(self) -> int:
-        return (self.finished_tasks * 100) // self.total_tasks
+        try:
+            return (self.finished_tasks * 100) // self.total_tasks
+        except ZeroDivisionError:
+            return 0
 
 
 class _SettingsManager(models.Manager["SettingsStore"]):
@@ -67,10 +74,14 @@ class _BulkUploadManager(models.Manager["BulkUploadProcess"]):
     def bulk_upload(self, zip_file_path: ZipPath) -> "BulkUploadProcess":
         paths = []
         extensions = get_file_extensions_for_image_format(ImageFormat.JPEG)
-        glob_patterns = tuple([f'**/*{extension}' for extension in extensions])
+        glob_patterns = [f'**/*{extension}' for extension in extensions]
+        glob_patterns += [f'*{extension}' for extension in extensions]
 
         for glob_pattern in glob_patterns: paths += [*zip_file_path.glob(glob_pattern)]
         
+        if not any(paths):
+            raise ValueError('No files to process.')
+
         group_result = cast(GroupResult, group(
                 chain(
 
@@ -339,3 +350,44 @@ class BulkUploadProcessError(AbstractBaseModel):
     )
 
     objects: models.Manager["BulkUploadProcessError"] = models.Manager()
+
+
+class ZipFileStore(AbstractBaseModel):
+
+    zip_file = models.FileField(
+        verbose_name=SignalEffect.AUTO_DELETE_FILE + SignalEffect.AUTO_DELETE_OLD_FILE,
+        upload_to=zip_file_store_upload_path_generator,
+        unique=True,
+        help_text=f"Upload a zip file containing wallpapers that does not exceed {settings.MAX_BULK_UPLOAD_SIZE // mb} MB.",
+        validators=[
+            validators.FileExtensionValidator(('zip', )),
+            MaxFileSizeValidator(500 * mb),
+        ],
+        max_length=64
+    )
+
+
+    def clean(self) -> None:
+        zip_file = cast(FieldFile, self.zip_file)
+
+        try:
+            zipfile.ZipFile(zip_file)
+        except zipfile.BadZipfile as err:
+            raise ValidationError(
+                'Invalid zip file.',
+                code='invalid_zip_file'
+            )
+        
+        if (bad_file:=zipfile.ZipFile(zip_file).testzip()) is not None:
+            raise ValidationError(
+                "Bad file found in zip: %(bad_file)s",
+                code='bad_file_found_in_zip_file',
+                params=dict(bad_file=bad_file)
+            )
+
+        # needs more validation to prevent attacks like zip bomb
+
+
+    def get_zip_file(self) -> zipfile.ZipFile:
+        zip_file = cast(FieldFile, self.zip_file)
+        return zipfile.ZipFile(zip_file)

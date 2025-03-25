@@ -6,10 +6,99 @@
 
 {% block pagebody %}
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data" id="bulk_upload_form" hx-post='/bulk-upload' hx-swap='none' hx-disabled-elt="#upload_button">
     {% csrf_token %}
-    {% include "app/forms/bulk_upload_form.html" %}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    
+    {{ form }}
+
+    <div class="progress my-3">
+        <div id="bulk_upload_form_progress" class="progress-bar progress-bar-striped bg-primary progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <button id="upload_button" class="btn btn-primary fw-bolder">Upload</button>
 </form>
 
+<div id="upload_processes" class="row p-3 mt-3">
+
+    {% for process in processes %}
+        <div class="mb-3" hx-get="{% url 'progress' %}{% querystring process_uuid=process.uuid.hex %}" hx-swap="none" hx-trigger="every 1s">
+            <p>Processing bulk upload request: <span id="process-id" class="fw-bold">{{ process.uuid.hex }}</span></p>
+
+            {% if process.calculate_progress.finished_tasks == process.calculate_progress.total_tasks %}
+                <div class="alert alert-success" role="alert">
+                    Task 100% completed.
+                </div>    
+            {% else %}
+                <div id="progress-bar" class="progress my-3">
+                    <div id="progress_{{process.uuid.hex}}" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            {% endif %}
+
+            <div class="text-danger">
+                <ul id="errors_{{process.uuid.hex}}">
+                    {% for error in process.errors.all %}
+                        <li>
+                            {{error.at_file}}: {{ error.validation_error }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+    
+
+</div>
+
+
+
 {% endblock pagebody %}
+
+
+{% block jsfiles %}
+<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+{% endblock jsfiles %}
+
+
+{% block tail %}
+<script>
+    htmx.on('#bulk_upload_form', 'htmx:xhr:progress', function(evt) {
+        const progressBar = htmx.find('#bulk_upload_form_progress');
+        const width = (evt.detail.loaded / evt.detail.total) * 100;
+        progressBar.setAttribute('style', `width: ${width}%;`);
+        progressBar.setAttribute('aria-valuenow', `${width}`)
+    });
+
+
+    document.body.addEventListener("reload_page", function(evt){
+        location.reload(true);
+    })
+    
+
+    {% for process in processes %}
+        document.body.addEventListener("update_{{process.uuid.hex}}", function(evt){
+            const width = evt.detail.width
+
+            if(width === 100) {
+                htmx.find('#progress-bar').outerHTML = `
+                    <div class="alert alert-success" role="alert">
+                        Task 100% completed.
+                    </div>
+                `
+            } else {
+                const progressBar = htmx.find('#progress_{{process.uuid.hex}}');
+                progressBar.setAttribute('style', `width: ${width}%;`);
+                progressBar.setAttribute('aria-valuenow', `${width}`)
+            }
+
+
+            const errors = evt.detail.errors
+            let li_list = ''
+            for (let index = 0; index < errors.length; index++) {
+                const element = errors[index];
+                li_list += `<li> ${element} </li>`
+            }
+            htmx.find('#errors_{{process.uuid.hex}}').innerHTML = li_list
+        })
+    {% endfor %}
+</script>
+{% endblock tail %}

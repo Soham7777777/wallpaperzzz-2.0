@@ -1,3 +1,4 @@
+import os
 import uuid
 from typing import cast
 from celery import shared_task, Task
@@ -8,13 +9,14 @@ from zipfile import Path as ZipPath
 from celery.exceptions import Reject
 from django.core.exceptions import ValidationError
 from celery.exceptions import Reject
+from django.conf import settings
 
 
 @shared_task(bind=True, ignore_result=False, acks_late=False)
 def save_wallpaper(self: Task[[str, str], str], image_path: str, zip_file_path: str) -> str:
     from app.models import BulkUploadProcess, Wallpaper, BulkUploadProcessError
 
-    w = Wallpaper(image=ImageFile(ZipPath(zip_file_path, at=image_path).open('rb')))
+    w = Wallpaper(image=ImageFile(ZipPath(os.path.join(settings.MEDIA_ROOT, zip_file_path), at=image_path).open('rb')))
 
     try:
         w.full_clean(exclude=('dimension', ))
