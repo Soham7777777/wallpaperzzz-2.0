@@ -16,7 +16,8 @@ from django.conf import settings
 def save_wallpaper(self: Task[[str, str], str], image_path: str, zip_file_path: str) -> str:
     from app.models import BulkUploadProcess, Wallpaper, BulkUploadProcessError
 
-    w = Wallpaper(image=ImageFile(ZipPath(os.path.join(settings.MEDIA_ROOT, zip_file_path), at=image_path).open('rb')))
+    with ZipPath(os.path.join(settings.MEDIA_ROOT, zip_file_path), at=image_path).open('rb') as f:
+        w = Wallpaper(image=ImageFile(f))
 
     try:
         w.full_clean(exclude=('dimension', ))

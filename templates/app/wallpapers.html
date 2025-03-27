@@ -1,0 +1,59 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+
+{% block title %}Wallpapers{% endblock title %}
+
+
+{% block head %}
+<style>
+    #wallpaper-grid::before { content: ""; display: table; clear: both;}
+    #wallpaper-grid { margin-top: 22px; }
+    #wallpaper-grid::after { content: ""; display: table; clear: both;}
+    .wallpaper {
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .wallpaper-image {
+        width: 100%;
+        display: block;
+        height: auto;
+    }
+</style>
+{% endblock head %}
+
+
+{% block pagebody %}
+
+    <div id="wallpaper-grid">
+        {% for image in images %}
+
+            <div class="wallpaper">
+                <img class="wallpaper-image" src="{{ media_url }}{{ image.dummy_image }}" alt="wallpaper">
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock pagebody %}
+
+
+{% block jsfiles %}
+<script src="{{ STATIC_PREFIX }}assets/vendor/macy/js/macy.js"></script>
+{% endblock jsfiles %}
+
+
+{% block tail %}
+<script>
+    document.addEventListener("DOMContentLoaded", function(evt) {
+        let macyInstance = Macy({
+            container: '#wallpaper-grid'
+        });
+
+        document.querySelector('.toggle-sidebar-btn').addEventListener('click', function() {
+            setTimeout(macyInstance.recalculate, 1000)
+        })
+    })
+</script>
+{% endblock tail %}

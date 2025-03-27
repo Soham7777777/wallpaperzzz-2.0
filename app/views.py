@@ -1,10 +1,11 @@
 import json
 from typing import cast
 import uuid
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse, Http404
 from django.shortcuts import render, redirect, resolve_url, get_object_or_404
 from app.forms import ZipFileStoreModelForm, ProgressForm
-from app.models import BulkUploadProcess
+from app.models import BulkUploadProcess, Wallpaper
 import zipfile
 
 
@@ -42,7 +43,7 @@ def progress(request: HttpRequest) -> HttpResponse:
             progress = process.calculate_progress()
             width = progress.calculate_percentage()
         except ValueError:
-            raise Http404()
+            return HttpResponse(286)
         
         errors = [f"<b>{error.at_file}</b>: {error.validation_error}" for error in  process.errors.all()]
 
@@ -55,4 +56,9 @@ def progress(request: HttpRequest) -> HttpResponse:
 
         return response
     
-    raise Http404()
+    return HttpResponse(286)
+    
+
+def wallpapers(request: HttpRequest) -> HttpResponse:
+    images = Wallpaper.objects.exclude(dummy_image__isnull=True).values('dummy_image')[:10]
+    return render(request, 'app/wallpapers.html', dict(images=images, media_url=settings.MEDIA_URL))

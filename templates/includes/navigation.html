@@ -29,9 +29,17 @@
 </header>
 
 {% url "bulk_upload" as bulk_upload_url %}
+{% url "wallpapers" as wallpapers_url %}
 
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
+        
+        <li class="nav-item">
+            <a class="nav-link {% if request.path != wallpapers_url %} collapsed {% endif %}" href="{{ wallpapers_url }}">
+            <i class="bi bi-images fs-5 me-4"></i>
+            <span>Wallpapers</span>
+            </a>
+        </li>
 
         <li class="nav-item">
             <a class="nav-link {% if request.path != bulk_upload_url %} collapsed {% endif %}" href="{{ bulk_upload_url }}">
